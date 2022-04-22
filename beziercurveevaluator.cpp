@@ -16,7 +16,6 @@ void BezierCurveEvaluator::evaluateCurve(const std::vector<Point>& ptvCtrlPts,
 
 	while (iCtrlPtCount > 3)
 	{
-		Vec4f T;
 		Mat4f Q( -1, +3, -3, +1,
 				 +3, -6, +3, +0,
 				 -3, +3, +0, +0, 
@@ -26,7 +25,7 @@ void BezierCurveEvaluator::evaluateCurve(const std::vector<Point>& ptvCtrlPts,
 
 		for(float t = 0; t <= 1; t += 0.01)
 		{
-			T = Vec4f( pow(t, 3), pow(t, 2), t, 1);
+			Vec4f T( pow(t, 3), pow(t, 2), t, 1);
 			Vec4f res(T * Q);
 			ptvEvaluatedCurvePts.push_back( Point( res * xx, res * yy ));
 		}
