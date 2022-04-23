@@ -1,33 +1,39 @@
-#include "bsplinecurveevaluator.h"
+#include "catmullcurveevaluator.h"
 #include <assert.h>
 #include "vec.h"
 #include "mat.h"
 
-void BSplineCurveEvaluator::evaluateCurve(const std::vector<Point>& ptvCtrlPts, 
+void CatmullCurveEvaluator::evaluateCurve(const std::vector<Point>& ptvCtrlPts, 
 										 std::vector<Point>& ptvEvaluatedCurvePts, 
 										 const float& fAniLength, 
 										 const bool& bWrap) const
 {
+    float a = 0.5;
+
     ptvEvaluatedCurvePts.clear();
 
     std::vector<Point> poor;
     poor.assign(ptvCtrlPts.begin(), ptvCtrlPts.end());
-    poor.insert(poor.begin(), 2, ptvCtrlPts[0]);
-    poor.insert(poor.end(), 2, ptvCtrlPts[ptvCtrlPts.size() - 1]);
+
+    // printf("%d\n", poor.size());
+    // std::cin >> a;
+
+    poor.insert(poor.begin(), Point(0, ptvCtrlPts[0].y));
+    poor.insert(poor.end(), Point(0, ptvCtrlPts[ptvCtrlPts.size() - 1].y));
 
     for(int i = 0; i < poor.size() - 3; ++i)
 	{
-		Mat4f Q( -1, +3, -3, +1,
-				 +3, -6, +3, +0,
-				 -3, +0, +3, +0, 
-				 +1, +4, +1, +0);
+		Mat4f Q( -a, 2-a, a-2, +a,
+				 +2*a, a-3, 3-2*a, -a,
+				 -a, +0, +a, +0, 
+				 +0, +1, +0, +0);
 		Vec4f xx( poor[i + 0].x, poor[i + 1].x, poor[i + 2].x, poor[i + 3].x);
 		Vec4f yy( poor[i + 0].y, poor[i + 1].y, poor[i + 2].y, poor[i + 3].y);
 
 		for(float t = 0; t <= 1; t += 0.01)
 		{
 			Vec4f T( pow(t, 3), pow(t, 2), t, 1);
-			Vec4f res(T * Q / 6.0);
+			Vec4f res(T * Q);
 			ptvEvaluatedCurvePts.push_back( Point( res * xx, res * yy ));
 		}
 	}
