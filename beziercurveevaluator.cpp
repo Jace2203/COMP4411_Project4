@@ -54,7 +54,7 @@ void BezierCurveEvaluator::evaluateCurve(const std::vector<Point>& ptvCtrlPts,
 			iCtrlPtCount -= 3;
 		}
 
-		while(--iCtrlPtCount != 0)
+		while(--iCtrlPtCount >= 0)
 			ptvEvaluatedCurvePts.push_back(ctrl[ctrl.size() - iCtrlPtCount - 1]);
 	}
 
