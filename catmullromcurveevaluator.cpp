@@ -12,7 +12,7 @@ void CatmullRomCurveEvaluator::evaluateCurve(const std::vector<Point>& ptvCtrlPt
 {
 	int iCtrlPtCount = ptvCtrlPts.size();
 
-	int sample = 4;
+	int sample = 50;
 	std::vector<Point> CtrlPts;
 	ptvEvaluatedCurvePts.clear();
 
@@ -64,26 +64,26 @@ void CatmullRomCurveEvaluator::evaluateCurve(const std::vector<Point>& ptvCtrlPt
 
 		for (int j = 0; j < sample; j++)
 		{
-			float t = j * step;
+			float t = (float)j / sample;
 			float tt = t * t;
 			float ttt = tt * t;
 
 			Vec4f T(ttt, tt, t, 1.0f);
 			float y = 0.5f * T * MP;
 
-			ptvEvaluatedCurvePts.push_back(Point(tMin + t, y));
+			ptvEvaluatedCurvePts.push_back(Point(tMin + j * step, y));
 		}
 		
 		if (i == iCtrlPtCount)
 		{
-			float t = tMax - tMin;
+			float t = (fAniLength - tMin) / (tMax - tMin);
 			float tt = t * t;
 			float ttt = tt * t;
 
 			Vec4f T(ttt, tt, t, 1.0f);
 			float y = 0.5f * T * MP;
 
-			ptvEvaluatedCurvePts.push_back(Point(tMin + t, y));
+			ptvEvaluatedCurvePts.push_back(Point(fAniLength, y));
 		}
 	}
 }
