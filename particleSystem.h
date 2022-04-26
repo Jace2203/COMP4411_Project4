@@ -16,9 +16,12 @@
 #ifndef __PARTICLE_SYSTEM_H__
 #define __PARTICLE_SYSTEM_H__
 
+#include <vector>
+#include <unordered_map>
+
 #include "vec.h"
 
-
+#include "particle.h"
 
 class ParticleSystem {
 
@@ -62,8 +65,6 @@ public:
 	// of baked particles (without leaking memory).
 	virtual void clearBaked();	
 
-
-
 	// These accessor fxns are implemented for you
 	float getBakeStartTime() { return bake_start_time; }
 	float getBakeEndTime() { return bake_end_time; }
@@ -71,12 +72,12 @@ public:
 	bool isSimulate() { return simulate; }
 	bool isDirty() { return dirty; }
 	void setDirty(bool d) { dirty = d; }
-
-
+	void setFPS(float fps) { bake_fps = fps; }
 
 protected:
 	
-
+	std::unordered_map<int, std::vector<Particle*>> particles;
+	std::vector<Vec3f> forces;
 
 	/** Some baking-related state **/
 	float bake_fps;						// frame rate at which simulation was baked
@@ -88,7 +89,6 @@ protected:
 	/** General state variables **/
 	bool simulate;						// flag for simulation mode
 	bool dirty;							// flag for updating ui (don't worry about this)
-
 };
 
 

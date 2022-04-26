@@ -189,6 +189,8 @@ void ModelerApplication::ValueChangedCallback()
 			// otherwise, we sync the psystem
 			// to the ui
 			else if (m_ui->simulate()) {
+				ps->resetSimulation(currTime);
+				ps->setFPS(m_ui->fps());
 				ps->startSimulation(currTime);
 			} else {
 				ps->stopSimulation(currTime);
