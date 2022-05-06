@@ -505,8 +505,9 @@ void Initial(MetaballContainer* left, MetaballContainer* right)
 {
 	if (displaylistID) return;
 
-	displaylistID = glGenLists(7);
+	displaylistID = glGenLists(7); // total num of list
 
+    // define listssss
 	glNewList(displaylistID, GL_COMPILE);
 		drawTorso();
 	glEndList();
@@ -538,5 +539,6 @@ void Initial(MetaballContainer* left, MetaballContainer* right)
 
 void callList(int index)
 {
+    // call corresponding draw list
     glCallList(displaylistID + index);
 }
