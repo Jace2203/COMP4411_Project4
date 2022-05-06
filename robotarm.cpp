@@ -11,6 +11,7 @@
 
 #include <FL/gl.h>
 #include <stdlib.h>
+#include <cmath>
 
 #define M_DEFAULT 2.0f
 #define M_OFFSET 3.0f
@@ -430,7 +431,11 @@ int main()
 
 	initTexture();
 
+	ParticleSystem* ps = new ParticleSystem();
+	ps->appendForce([&](Vec3f p) { return Vec3f(0.0f, -1.0f, 0.0f); });
+	ps->appendForce([&](Vec3f p) { return Vec3f(sin(p[0] * 2) + sin(p[1] * 2), 0.0f, sin(p[0] * 2) - sin(p[1] * 2) * 0.1f); });
+
     ModelerApplication::Instance()->Init(&createSampleModel, controls, NUMCONTROLS);
-	ModelerApplication::Instance()->SetParticleSystem(new ParticleSystem());
+	ModelerApplication::Instance()->SetParticleSystem(ps);
     return ModelerApplication::Instance()->Run();
 }

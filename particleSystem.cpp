@@ -135,7 +135,9 @@ void ParticleSystem::computeForcesAndUpdateParticles(float t)
 	// Accumulate Force
 	for (auto it = pa.begin(); it != pa.end(); it++)
 	{
-		(*it)->f += Vec3f( 0.0f, -1.0f, 0.0f);
+		for (auto func = forces.begin(); func != forces.end(); func++)
+			// (*it)->f += Vec3f( 0.0f, -1.0f, 0.0f);
+			(*it)->f += (*func)((*it)->p);
 	}
 
 	// Calculate Position
@@ -192,4 +194,9 @@ void ParticleSystem::clearBaked()
 {
 
 	// TODO
+}
+
+void ParticleSystem::appendForce(std::function<Vec3f(Vec3f)> func)
+{
+	forces.push_back(func);	
 }

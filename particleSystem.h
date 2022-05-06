@@ -18,6 +18,7 @@
 
 #include <vector>
 #include <unordered_map>
+#include <functional>
 
 #include "vec.h"
 #include "mat.h"
@@ -78,11 +79,13 @@ public:
 	void setDirty(bool d) { dirty = d; }
 	void setFPS(float fps) { bake_fps = fps; }
 
+	void appendForce(std::function<Vec3f(Vec3f)> func);
+
 protected:
 	
 	std::vector<std::vector<Particle*>> particles;
 	std::vector<Particle*> new_p;
-	std::vector<Vec3f> forces;
+	std::vector<std::function<Vec3f(Vec3f)>> forces;
 
 	/** Some baking-related state **/
 	float bake_fps;						// frame rate at which simulation was baked
