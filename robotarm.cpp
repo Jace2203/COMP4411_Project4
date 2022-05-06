@@ -113,8 +113,6 @@ public:
 		angles_R[0] = VAL(R_THIGH_XROT);
 		angles_R[1] = VAL(R_THIGH_YROT);
 		angles_R[2] = VAL(R_LEG_XROT);
-
-
 	}
 
 	~SampleModel()
@@ -148,6 +146,7 @@ public:
 	}
 
     virtual void draw();
+	void Initial();
 };
 
 // We need to make a creator function, mostly because of
@@ -171,13 +170,14 @@ double ani_height = -(head_size + torso_height)/5,
 	   chg_wave   = 0,
 	   time_wave  = 5;
 
-// We are going to override (is that the right word?) the draw()
-// method of ModelerView to draw out SampleModel
-void SampleModel::draw()
+GLuint 		displaylistID;
+
+void SampleModel::Initial()
 {
-    ModelerView::draw();
-	
-	glEnable( GL_LIGHT0 );
+	if (displaylistID) return;
+
+	displaylistID = glGenLists(1);
+	glNewList(displaylistID, GL_COMPILE);
 
 	lightPosition0[0] = VAL(LIGHTX);
 	lightPosition0[1] = VAL(LIGHTY);
@@ -363,6 +363,19 @@ void SampleModel::draw()
 
 		glPopMatrix();
 	glPopMatrix();
+
+	glEndList();
+}
+
+// We are going to override (is that the right word?) the draw()
+// method of ModelerView to draw out SampleModel
+
+void SampleModel::draw()
+{
+	Initial();
+
+	ModelerView::draw();
+	glCallList(displaylistID);
 }
 
 int main()
@@ -370,6 +383,7 @@ int main()
 	// Initialize the controls
 	// Constructor is ModelerControl(name, minimumvalue, maximumvalue, 
 	// stepsize, defaultvalue)
+
     ModelerControl controls[NUMCONTROLS];
 
 	// LOD
