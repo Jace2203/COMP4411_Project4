@@ -8,6 +8,17 @@
 #include <FL/gl.h>
 #include <cstdio>
 
+class Dot
+{
+public:
+
+	Dot() :x(0), y(0), z(0) {}
+	Dot(double x, double y, double z) :x(x), y(y), z(z) {}
+
+	double x;
+	double y;
+	double z;
+};
 
 enum DrawModeSetting_t 
 { NONE=0, NORMAL, WIREFRAME, FLATSHADE, };
@@ -91,5 +102,9 @@ void drawCylinder( double h, double r1, double r2 );
 void drawTriangle( double x1, double y1, double z1,
 			       double x2, double y2, double z2,
 			       double x3, double y3, double z3 );
+
+void drawtorus(Dot*** draw_pts, int num_t, double RY, double RUX);
+void drawCurve(Dot*** draw_pts, int num_t, double back_y);
+void calpoint(Dot* ctl, Dot** point, int num_pts, int num_t);
 
 #endif
