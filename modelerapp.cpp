@@ -132,6 +132,11 @@ void ModelerApplication::SetControlValue(int controlNumber, double value)
     m_ui->controlValue(controlNumber, value);
 }
 
+float ModelerApplication::GetTension() const
+{
+	return m_ui->tension();
+}
+
 ParticleSystem *ModelerApplication::GetParticleSystem()
 {
 	return ps;
@@ -155,6 +160,11 @@ int ModelerApplication::GetFps()
 bool ModelerApplication::Animating()
 {
 	return m_animating;
+}
+
+Camera* ModelerApplication::GetCamera() const
+{
+	return m_ui->getCamera();
 }
 
 void ModelerApplication::ValueChangedCallback()
@@ -189,6 +199,8 @@ void ModelerApplication::ValueChangedCallback()
 			// otherwise, we sync the psystem
 			// to the ui
 			else if (m_ui->simulate()) {
+				ps->resetSimulation(currTime);
+				ps->setFPS(m_ui->fps());
 				ps->startSimulation(currTime);
 			} else {
 				ps->stopSimulation(currTime);

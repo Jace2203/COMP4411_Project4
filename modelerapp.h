@@ -52,6 +52,8 @@ public:
     double GetControlValue(int controlNumber);
     void   SetControlValue(int controlNumber, double value);
 
+	float GetTension() const;
+
 	// Get and set particle system
 	ParticleSystem *GetParticleSystem();
 	void SetParticleSystem(ParticleSystem *s);
@@ -64,6 +66,8 @@ public:
 
 	// Returns animating flag
 	bool Animating();
+
+	Camera* GetCamera() const;
 
 private:
 	// Private for singleton

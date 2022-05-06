@@ -16,9 +16,17 @@
 #ifndef __PARTICLE_SYSTEM_H__
 #define __PARTICLE_SYSTEM_H__
 
+#include <vector>
+#include <unordered_map>
+#include <functional>
+
 #include "vec.h"
+#include "mat.h"
 
+#include "particle.h"
+#include "camera.h"
 
+extern std::vector<Vec4f*> particle_spawn;
 
 class ParticleSystem {
 
@@ -60,9 +68,7 @@ public:
 
 	// This function should clear out your data structure
 	// of baked particles (without leaking memory).
-	virtual void clearBaked();	
-
-
+	virtual void clearBaked();
 
 	// These accessor fxns are implemented for you
 	float getBakeStartTime() { return bake_start_time; }
@@ -71,12 +77,15 @@ public:
 	bool isSimulate() { return simulate; }
 	bool isDirty() { return dirty; }
 	void setDirty(bool d) { dirty = d; }
+	void setFPS(float fps) { bake_fps = fps; }
 
-
+	void appendForce(std::function<Vec3f(Vec3f)> func);
 
 protected:
 	
-
+	std::vector<std::vector<Particle>> particles;
+	std::vector<Particle*> new_p;
+	std::vector<std::function<Vec3f(Vec3f)>> forces;
 
 	/** Some baking-related state **/
 	float bake_fps;						// frame rate at which simulation was baked
@@ -88,8 +97,6 @@ protected:
 	/** General state variables **/
 	bool simulate;						// flag for simulation mode
 	bool dirty;							// flag for updating ui (don't worry about this)
-
 };
-
 
 #endif	// __PARTICLE_SYSTEM_H__

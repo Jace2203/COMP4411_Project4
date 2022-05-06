@@ -7,17 +7,18 @@ To create an impressionistic picture, the user loads an existing image and paint
 
 ### Required Tasks:
 
-- [ ] Implement the following curve types with support for wrapping:
-- [ ] Bézier (splined together with C0 continuity)
-- [ ] B-spline
-- [ ] Catmull-Rom
-- [ ] Implement a particle system that is integrated with your model in some way.
+- [x] Implement the following curve types with support for wrapping:
+- [x] Bézier (splined together with C0 continuity)
+- [x] B-spline
+- [x] Catmull-Rom
+- [x] Implement a particle system that is integrated with your model in some way.
+- [ ] Animation
 
 ### Extra Tasks:
 
 ||Task|Done|
 |-|-|-|
-|W|spline control options||
+|W|spline control options|✔|
 |W|TGA||
 |W|mirror||
 |W|billboard||
