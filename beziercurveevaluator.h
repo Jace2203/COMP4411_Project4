@@ -16,4 +16,6 @@ public:
 		const bool& bWrap) const;
 };
 
+void displayBezier(Point V0, Point V1, Point V2, Point V3, double epsilon, std::vector<Point>& ptvEvaluatedCurvePts);
+
 #endif
