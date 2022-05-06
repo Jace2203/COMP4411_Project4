@@ -42,6 +42,7 @@ public:
 	void redrawModelerView();
     void autoLoadNPlay();
 	float tension() const;
+	Camera* getCamera() const;
 
 protected:
 

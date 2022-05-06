@@ -8,6 +8,9 @@
 #include "bitmap.h"
 #include <cstring>
 
+#include "modelerapp.h"
+#include "camera.h"
+
 #define M_PI 3.141592653589793238462643383279502f
 
 bmp::bmp():width(0), height(0), data(nullptr) {}
@@ -124,8 +127,9 @@ void drawArmL(double upper_y, double upper_z, double lower_x, double upper_x, Me
 	glPopMatrix();
 }
 
-void drawLegL(double thigh_x, double thigh_y, double leg_x, int lod)
+Vec4f* drawLegL(double thigh_x, double thigh_y, double leg_x, int lod)
 {
+    Vec4f* v = nullptr;
     glPushMatrix();
         glTranslated(0.3, 0.0, 0.0);
         glRotated(thigh_y, 0.0, 0.0, 1.0);
@@ -145,16 +149,20 @@ void drawLegL(double thigh_x, double thigh_y, double leg_x, int lod)
                 glRotated(leg_x, 1.0, 0.0, 0.0);
                 loadTexture(LEG_DOWN);
                 drawCylinder(leg_length, 0.12, 0.11);
+                Camera* c = ModelerApplication::Instance()->GetCamera();
+                v = new Vec4f(c->getCameraMat().inverse() * getModelViewMatrix() * Vec4f(0, 0, leg_length, 1));
             glPopMatrix();
         }
 
     glPopMatrix();
 
     glDisable(GL_TEXTURE_2D);
+    return v;
 }
 
-void drawLegR(double thigh_x, double thigh_y, double leg_x, int lod)
+Vec4f* drawLegR(double thigh_x, double thigh_y, double leg_x, int lod)
 {
+    Vec4f* v = nullptr;
     glPushMatrix();
         glTranslated(-0.3, 0.0, 0.0);
         glRotated(thigh_y, 0.0, 0.0, -1.0);
@@ -174,12 +182,15 @@ void drawLegR(double thigh_x, double thigh_y, double leg_x, int lod)
                 glRotated(leg_x, 1.0, 0.0, 0.0);
                 loadTexture(LEG_DOWN);
                 drawCylinder(leg_length, 0.12, 0.11);
+                Camera* c = ModelerApplication::Instance()->GetCamera();
+                v = new Vec4f(c->getCameraMat().inverse() * getModelViewMatrix() * Vec4f(0, 0, leg_length, 1));
             glPopMatrix(); 
         }
 
     glPopMatrix();
 
     glDisable(GL_TEXTURE_2D);
+    return v;
 }
 
 void drawEquipment(double back_y, double l_equip_y, double r_equip_y, double l_turret_y, double r_turret_y, double l_turret_x, double r_turret_x, int turret_num, int lod)

@@ -1023,3 +1023,8 @@ float ModelerUI::tension() const
 {
 	return m_fTension;
 }
+
+Camera* ModelerUI::getCamera() const
+{
+	return m_pwndModelerView->m_camera;
+}

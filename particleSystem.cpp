@@ -11,6 +11,8 @@
 
 #include "modelerdraw.h"
 
+std::vector<Vec4f*> particle_spawn;
+
 /***************
  * Constructors
  ***************/
@@ -30,8 +32,8 @@ ParticleSystem::ParticleSystem()
 
 ParticleSystem::~ParticleSystem() 
 {
-	for (auto it : particles)
-		for (auto itt = it.second.begin(); itt != it.second.end(); itt++)
+	for (auto it = particles.begin(); it != particles.end(); it++)
+		for (auto itt = (*it).begin(); itt != (*it).end(); itt++)
 			delete *itt;
 }
 
@@ -74,8 +76,8 @@ void ParticleSystem::resetSimulation(float t)
 	simulate = false;
 	dirty = true;
 
-	for (auto it : particles)
-		for (auto itt = it.second.begin(); itt != it.second.end(); itt++)
+	for (auto it = particles.begin(); it != particles.end(); it++)
+		for (auto itt = (*it).begin(); itt != (*it).end(); itt++)
 			delete *itt;
 }
 
@@ -90,35 +92,50 @@ void ParticleSystem::computeForcesAndUpdateParticles(float t)
 	int time = int(t * 30.0f) / (30.0f / bake_fps);
 
 	// Copy old particles
-	std::vector<Particle*>& p = particles[time - 1];
-	for (auto it = p.begin(); it != p.end(); it++)
+	if (!particles.empty())
 	{
-		Particle* old_p = *it;
-		if (t - old_p->t < 5.0f)
+		std::vector<Particle*>& p = particles.back();
+		for (auto it = p.begin(); it != p.end(); it++)
 		{
-			Particle* new_p = new Particle(*old_p);
-			new_p->f = Vec3f( 0.0f, 0.0f, 0.0f );
-			pa.push_back(new_p);
+			Particle* old_p = *it;
+			if (t - old_p->t < 2.5f)
+			{
+				Particle* new_p = new Particle(*old_p);
+				new_p->f = Vec3f(0.0f, 0.0f, 0.0f);
+				pa.push_back(new_p);
+			}
 		}
 	}
 
 	// Spawn new particles
-	int r = rand() % 5;
-	for (int i = 0; i < r; i++)
+	for (auto it = particle_spawn.begin(); it != particle_spawn.end(); it++)
 	{
-		Particle* pp = new Particle;
-		pp->p = Vec3f( float(rand()) / RAND_MAX * 2 - 1, 1.0f, float(rand()) / RAND_MAX * 2 - 1);
-		pp->v = Vec3f( 0.0f, float(rand()) / RAND_MAX * 2 - 1, 0.0f );
-		pp->f = Vec3f( 0.0f, 0.0f, 0.0f );
-		pp->m = 1.0f;
-		pp->t = t;
-		pa.push_back(pp);
+		if (!*it)
+			continue;
+		
+		int r = rand() % 5;
+		for (int i = 0; i < r; i++)
+		{
+			float r_x = (float)rand() / RAND_MAX * 0.002f - 0.001f;
+			float r_y = (float)rand() / RAND_MAX * 0.002f - 0.001f;
+			float r_z = (float)rand() / RAND_MAX * 0.002f - 0.001f;
+
+			Vec4f pos = **it + Vec4f(r_x, r_y, r_z, 1.0f);
+			
+			Particle* pp = new Particle;
+			pp->p = Vec3f( pos[0], pos[1], pos[2] );
+			pp->v = Vec3f( float(rand()) / RAND_MAX * 0.5f - 0.25f, float(rand()) / RAND_MAX *  0.7f + 1.0f, -2.0f );
+			pp->f = Vec3f( 0.0f, 0.0f, 0.0f );
+			pp->m = 1.0f;
+			pp->t = t;
+			pa.push_back(pp);
+		}
 	}
 
 	// Accumulate Force
 	for (auto it = pa.begin(); it != pa.end(); it++)
 	{
-		(*it)->f += Vec3f( 0.0f, 1.0f, 0.0f);
+		(*it)->f += Vec3f( 0.0f, -1.0f, 0.0f);
 	}
 
 	// Calculate Position
@@ -128,7 +145,7 @@ void ParticleSystem::computeForcesAndUpdateParticles(float t)
 		(*it)->v += (*it)->f * (1.0f / bake_fps) / (*it)->m;
 	}
 
-	particles[time] = pa;
+	particles.push_back(pa);
 }
 
 
@@ -136,16 +153,26 @@ void ParticleSystem::computeForcesAndUpdateParticles(float t)
 void ParticleSystem::drawParticles(float t)
 {
 	int time = int(t * 30.0f) / (30.0f / bake_fps);
-	for (auto it = particles[time].begin(); it != particles[time].end(); it++)
+	if (time >= particles.size())
+		return;
+	std::vector<Particle*>& p = particles[time];
+	if (p.empty())
+		return;
+
+	float currentColor[4];
+	glGetFloatv(GL_CURRENT_COLOR,currentColor);
+	for (auto it = p.begin(); it != p.end(); it++)
 	{
 		Particle* p = *it;
 		glPushMatrix();
 
+		setDiffuseColor((t - p->t) / 3.0f, (t - p->t) / 3.0f, 1.0f);
 		glTranslatef(p->p[0], p->p[1], p->p[2]);
-		drawSphere(0.1f);
+		drawSphere(p->m * 0.02f);
 
 		glPopMatrix();
 	}
+	setDiffuseColor(currentColor[0], currentColor[1], currentColor[2]);
 }
 
 

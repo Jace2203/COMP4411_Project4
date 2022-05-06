@@ -252,11 +252,16 @@ void Camera::applyViewingTransform() {
 	if( mDirtyTransform )
 		calculateViewingTransformParameters();
 
+	Mat4f m = getModelViewMatrix();
+
 	// Place the camera at mPosition, aim the camera at
 	// mLookAt, and twist the camera such that mUpVector is up
 	gluLookAt(	mPosition[0], mPosition[1], mPosition[2],
 				mLookAt[0],   mLookAt[1],   mLookAt[2],
 				mUpVector[0], mUpVector[1], mUpVector[2]);
+	
+	Mat4f mv = getModelViewMatrix();
+	mCameraMat = mv * m.inverse();
 }
 
 
@@ -398,6 +403,20 @@ float Camera::keyframeTime(int keyframe) const
 		return ptCtrlPt.x;
 	}
 	return 0.0f;
+}
+
+Mat4f getModelViewMatrix()
+{
+	GLfloat m[16];
+	glGetFloatv(GL_MODELVIEW_MATRIX, m);
+	Mat4f matMV(
+		m[0],  m[1],  m[2],  m[3],
+		m[4],  m[5],  m[6],  m[7],
+		m[8],  m[9],  m[10], m[11],
+		m[12], m[13], m[14], m[15]
+	);
+
+	return matMV.transpose();
 }
 
 #pragma warning(pop)

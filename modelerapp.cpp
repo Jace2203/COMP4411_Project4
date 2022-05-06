@@ -162,6 +162,11 @@ bool ModelerApplication::Animating()
 	return m_animating;
 }
 
+Camera* ModelerApplication::GetCamera() const
+{
+	return m_ui->getCamera();
+}
+
 void ModelerApplication::ValueChangedCallback()
 {
 

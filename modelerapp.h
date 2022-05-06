@@ -67,6 +67,8 @@ public:
 	// Returns animating flag
 	bool Animating();
 
+	Camera* GetCamera() const;
+
 private:
 	// Private for singleton
 	ModelerApplication() : m_numControls(-1) { ps = 0; }

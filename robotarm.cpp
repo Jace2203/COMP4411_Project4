@@ -31,6 +31,7 @@
 #include "ik.h"
 
 #include "cmath"
+
 static GLfloat lightPosition0[] = { 4, 2, -4, 0 };
 static GLfloat lightDiffuse0[]  = { 1,1,1,1 };
 
@@ -170,6 +171,11 @@ double ani_height = -(head_size + torso_height)/5,
 void SampleModel::draw()
 {
     ModelerView::draw();
+	while (particle_spawn.begin() != particle_spawn.end())
+	{
+		delete *(particle_spawn.begin());
+		particle_spawn.erase(particle_spawn.begin());
+	}
 	
 	glEnable( GL_LIGHT0 );
 
@@ -307,13 +313,13 @@ void SampleModel::draw()
 						   LLX = 2*cur_theta, 
 						   RLX = 2*cur_theta;
 
-					drawLegL(LTX, VAL(L_THIGH_YROT), LLX, lod - 1);
-					drawLegR(RTX, VAL(R_THIGH_YROT), RLX, lod - 1);
+					particle_spawn.push_back(drawLegL(LTX, VAL(L_THIGH_YROT), LLX, lod - 1));
+					particle_spawn.push_back(drawLegR(RTX, VAL(R_THIGH_YROT), RLX, lod - 1));
 				}
 				else if (VAL(APPLY_IK))
 				{
-					drawLegL(angles_L[0], angles_L[1], angles_L[2], lod - 1);
-					drawLegR(angles_R[0], angles_R[1], angles_R[2], lod - 1);
+					particle_spawn.push_back(drawLegL(angles_L[0], angles_L[1], angles_L[2], lod - 1));
+					particle_spawn.push_back(drawLegR(angles_R[0], angles_R[1], angles_R[2], lod - 1));
 				}
 				else
 				{
@@ -322,8 +328,8 @@ void SampleModel::draw()
 						   LLX = (VAL(MOOD) == 1) ? 75.0: VAL(L_LEG_XROT),
 						   RLX = (VAL(MOOD) == 1) ? 75.0: VAL(R_LEG_XROT);
 
-					drawLegL(LTX, VAL(L_THIGH_YROT), LLX, lod - 1);
-					drawLegR(RTX, VAL(R_THIGH_YROT), RLX, lod - 1);
+					particle_spawn.push_back(drawLegL(LTX, VAL(L_THIGH_YROT), LLX, lod - 1));
+					particle_spawn.push_back(drawLegR(RTX, VAL(R_THIGH_YROT), RLX, lod - 1));
 				}
 
 				setDiffuseColor(50.0/255, 75.0/255, 100.0/255);
@@ -425,5 +431,6 @@ int main()
 	initTexture();
 
     ModelerApplication::Instance()->Init(&createSampleModel, controls, NUMCONTROLS);
+	ModelerApplication::Instance()->SetParticleSystem(new ParticleSystem());
     return ModelerApplication::Instance()->Run();
 }

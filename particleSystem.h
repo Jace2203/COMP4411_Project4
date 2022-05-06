@@ -20,8 +20,12 @@
 #include <unordered_map>
 
 #include "vec.h"
+#include "mat.h"
 
 #include "particle.h"
+#include "camera.h"
+
+extern std::vector<Vec4f*> particle_spawn;
 
 class ParticleSystem {
 
@@ -63,7 +67,7 @@ public:
 
 	// This function should clear out your data structure
 	// of baked particles (without leaking memory).
-	virtual void clearBaked();	
+	virtual void clearBaked();
 
 	// These accessor fxns are implemented for you
 	float getBakeStartTime() { return bake_start_time; }
@@ -76,7 +80,8 @@ public:
 
 protected:
 	
-	std::unordered_map<int, std::vector<Particle*>> particles;
+	std::vector<std::vector<Particle*>> particles;
+	std::vector<Particle*> new_p;
 	std::vector<Vec3f> forces;
 
 	/** Some baking-related state **/
@@ -90,6 +95,5 @@ protected:
 	bool simulate;						// flag for simulation mode
 	bool dirty;							// flag for updating ui (don't worry about this)
 };
-
 
 #endif	// __PARTICLE_SYSTEM_H__
