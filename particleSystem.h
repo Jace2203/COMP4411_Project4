@@ -83,7 +83,7 @@ public:
 
 protected:
 	
-	std::vector<std::vector<Particle*>> particles;
+	std::vector<std::vector<Particle>> particles;
 	std::vector<Particle*> new_p;
 	std::vector<std::function<Vec3f(Vec3f)>> forces;
 
