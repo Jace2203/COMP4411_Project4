@@ -146,7 +146,6 @@ public:
 	}
 
     virtual void draw();
-	void Initial();
 };
 
 // We need to make a creator function, mostly because of
@@ -170,14 +169,14 @@ double ani_height = -(head_size + torso_height)/5,
 	   chg_wave   = 0,
 	   time_wave  = 5;
 
-GLuint 		displaylistID;
+// We are going to override (is that the right word?) the draw()
+// method of ModelerView to draw out SampleModel
 
-void SampleModel::Initial()
+void SampleModel::draw()
 {
-	if (displaylistID) return;
+	Initial(metaball_container[1], metaball_container[0]);
 
-	displaylistID = glGenLists(1);
-	glNewList(displaylistID, GL_COMPILE);
+	ModelerView::draw();
 
 	lightPosition0[0] = VAL(LIGHTX);
 	lightPosition0[1] = VAL(LIGHTY);
@@ -296,11 +295,13 @@ void SampleModel::Initial()
 			glRotated(-90.0, 1.0, 0.0, 0.0);
 			glTranslated(0, 0, cur_height);
 
-			drawTorso();
+			// drawTorso();
+			callList(0);
 
 			if (lod > 0)
 			{
-				drawHead();
+				// drawHead();
+				callList(1);
 
 				// double LZ = (ModelerApplication::Instance()->IsAnimating()) ? cur_wave : (VAL(MOOD) == 1) ? -45.0: (VAL(MOOD) == 2) ?  45.0: VAL(L_UPPER_ARM_ZROT),
 				// 	   RZ = (ModelerApplication::Instance()->IsAnimating()) ? cur_wave : (VAL(MOOD) == 1) ?  45.0: (VAL(MOOD) == 2) ? -45.0: VAL(R_UPPER_ARM_ZROT),
@@ -363,19 +364,6 @@ void SampleModel::Initial()
 
 		glPopMatrix();
 	glPopMatrix();
-
-	glEndList();
-}
-
-// We are going to override (is that the right word?) the draw()
-// method of ModelerView to draw out SampleModel
-
-void SampleModel::draw()
-{
-	Initial();
-
-	ModelerView::draw();
-	glCallList(displaylistID);
 }
 
 int main()

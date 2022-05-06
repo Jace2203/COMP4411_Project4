@@ -59,4 +59,7 @@ void deleteTexture();
 
 void drawLsystem(double IT, double DV, double IA, double AOI, double BY);
 
+void Initial(MetaballContainer* left, MetaballContainer* right);
+void callList(int index);
+
 #endif
