@@ -5,11 +5,15 @@
 #include "mat.h"
 #include <algorithm>
 
+#include "modelerapp.h"
+
 void CatmullRomCurveEvaluator::evaluateCurve(const std::vector<Point>& ptvCtrlPts, 
 										 std::vector<Point>& ptvEvaluatedCurvePts, 
 										 const float& fAniLength, 
 										 const bool& bWrap) const
 {
+	float tau = ModelerApplication::Instance()->GetTension();
+
 	int iCtrlPtCount = ptvCtrlPts.size();
 
 	int sample = 50;
@@ -42,10 +46,10 @@ void CatmullRomCurveEvaluator::evaluateCurve(const std::vector<Point>& ptvCtrlPt
 		CtrlPts.push_back(Point(fAniLength, (ptvCtrlPts.end() - 1)->y));
 	}
 
-	Mat4f M(-1.0f,  3.0f, -3.0f,  1.0f,
-			 2.0f, -5.0f,  4.0f, -1.0f,
-			-1.0f,  0.0f,  1.0f,  0.0f,
-			 0.0f,  2.0f,  0.0f,  0.0f);
+	Mat4f M(-tau,		2.0f - tau,		tau - 2.0f,			 tau,
+			 2 * tau,	tau - 3.0f,		3.0f - 2 * tau,		-tau,
+			-tau,		0.0f,			tau,				 0.0f,
+			 0.0f,		1.0f,			0.0f,				 0.0f);
 
 	if (!bWrap)
 		ptvEvaluatedCurvePts.push_back(Point(0.0f, CtrlPts.begin()->y));
@@ -64,8 +68,10 @@ void CatmullRomCurveEvaluator::evaluateCurve(const std::vector<Point>& ptvCtrlPt
 		const Point& P1 = *(CtrlPts.begin() + i + 1);
 		const Point& P2 = *(CtrlPts.begin() + i + 2);
 		const Point& P3 = *(CtrlPts.begin() + i + 3);
-		Vec4f P(P0.y, P1.y, P2.y, P3.y);
-		Vec4f MP = M * P;
+		Vec4f Px(P0.x, P1.x, P2.x, P3.x);
+		Vec4f Py(P0.y, P1.y, P2.y, P3.y);
+		Vec4f MPx = M * Px;
+		Vec4f MPy = M * Py;
 
 		float tMin = P1.x, tMax = P2.x;
 		float step = (tMax - tMin) / sample;
@@ -80,9 +86,11 @@ void CatmullRomCurveEvaluator::evaluateCurve(const std::vector<Point>& ptvCtrlPt
 			float ttt = tt * t;
 
 			Vec4f T(ttt, tt, t, 1.0f);
-			float y = 0.5f * T * MP;
+			float x = T * MPx;
+			float y = T * MPy;
 
-			ptvEvaluatedCurvePts.push_back(Point(tMin + j * step, y));
+			if (ptvEvaluatedCurvePts.empty() || x > ptvEvaluatedCurvePts.back().x)
+				ptvEvaluatedCurvePts.push_back(Point(x, y));
 		}
 	}
 
@@ -92,8 +100,10 @@ void CatmullRomCurveEvaluator::evaluateCurve(const std::vector<Point>& ptvCtrlPt
 		const Point& P1 = *(CtrlPts.end() - 1 - 2);
 		const Point& P2 = *(CtrlPts.end() - 1 - 1);
 		const Point& P3 = *(CtrlPts.end() - 1);
-		Vec4f P(P0.y, P1.y, P2.y, P3.y);
-		Vec4f MP = M * P;
+		Vec4f Px(P0.x, P1.x, P2.x, P3.x);
+		Vec4f Py(P0.y, P1.y, P2.y, P3.y);
+		Vec4f MPx = M * Px;
+		Vec4f MPy = M * Py;
 
 		float tMin = P1.x, tMax = P2.x;
 		float step = (tMax - tMin) / sample;
@@ -106,9 +116,11 @@ void CatmullRomCurveEvaluator::evaluateCurve(const std::vector<Point>& ptvCtrlPt
 			float ttt = tt * t;
 
 			Vec4f T(ttt, tt, t, 1.0f);
-			float y = 0.5f * T * MP;
+			float x = T * MPx;
+			float y = T * MPy;
 
-			ptvEvaluatedCurvePts.push_back(Point(tMin + j * step, y));
+			if (ptvEvaluatedCurvePts.empty() || x > ptvEvaluatedCurvePts.back().x)
+				ptvEvaluatedCurvePts.push_back(Point(x, y));
 		}
 		ptvEvaluatedCurvePts.push_back(Point(fAniLength, ptvEvaluatedCurvePts.begin()->y));
 	}

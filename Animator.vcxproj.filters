@@ -63,9 +63,6 @@
     <ClCompile Include="modelerui.cpp">
       <Filter>Source Files\Model</Filter>
     </ClCompile>
-    <ClCompile Include="modeleruiwindows.cxx">
-      <Filter>Source Files\Model</Filter>
-    </ClCompile>
     <ClCompile Include="modelerview.cpp">
       <Filter>Source Files\Model</Filter>
     </ClCompile>
@@ -118,6 +115,9 @@
       <Filter>Source Files\Model</Filter>
     </ClCompile>
     <ClCompile Include="metaball.cpp">
+      <Filter>Source Files\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="animatoruiwindows.cxx">
       <Filter>Source Files\Model</Filter>
     </ClCompile>
   </ItemGroup>
