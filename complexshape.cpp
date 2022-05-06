@@ -1,6 +1,7 @@
 #include "complexshape.h"
 
 #include "modelerdraw.h"
+#include "bitmap.h"
 
 void drawTurret2()
 {
@@ -498,4 +499,18 @@ void drawTriangles(int num, const Vec3f* v_buffer, const int* i_buffer)
         Vec3f c = v_buffer[i_buffer[i * 3 + 2]];
         drawTriangle(a[0], a[1], a[2], b[0], b[1], b[2], c[0], c[1], c[2]);
     }
+}
+
+void drawHeightfield()
+{
+    const int num_x = 50,
+              num_y = 50, 
+              face  = num_x * num_y * 2;
+
+    int width, height;
+    unsigned char *grey = readBMP("texture/grey.bmp", width, height);
+
+    Vec3f vertex_buffer[num_x * num_x];
+
+    for(int i = 0; i < )
 }
