@@ -132,6 +132,11 @@ void ModelerApplication::SetControlValue(int controlNumber, double value)
     m_ui->controlValue(controlNumber, value);
 }
 
+float ModelerApplication::GetTension() const
+{
+	return m_ui->tension();
+}
+
 ParticleSystem *ModelerApplication::GetParticleSystem()
 {
 	return ps;
