@@ -21,7 +21,7 @@ void BSplineCurveEvaluator::evaluateCurve(const std::vector<Point>& ptvCtrlPts,
 	if (ptvCtrlPts.size() == 2 && !bWrap)
 	{
 		boor.insert(boor.begin(), 3, ptvCtrlPts.front());
-		boor.insert(boor.end(), 1, ptvCtrlPts.back());
+		boor.insert(boor.end(), 2, ptvCtrlPts.back());
 	}
 	else if (bWrap)
 	{
@@ -31,7 +31,7 @@ void BSplineCurveEvaluator::evaluateCurve(const std::vector<Point>& ptvCtrlPts,
 		boor.push_back( Point((ptvCtrlPts.begin())->x + fAniLength, (ptvCtrlPts.begin())->y) );
 		boor.push_back( Point((ptvCtrlPts.begin() + 1)->x + fAniLength, (ptvCtrlPts.begin() + 1)->y) );
 	}
-	else
+	else if (!bWrap)
 	{
 		boor.push_back(ptvCtrlPts.front());
 		boor.push_back(ptvCtrlPts.front());
@@ -40,9 +40,9 @@ void BSplineCurveEvaluator::evaluateCurve(const std::vector<Point>& ptvCtrlPts,
 		boor.push_back(ptvCtrlPts.back());
 	}
 
-	float bound;
-	bool used = 0;
-
+	float bound, start;
+	bool used = 0, touched = 0;
+	
 	for(int i = 0; i < boor.size() - 3; ++i)
 	{
 		Vec4f xx( boor[i + 0].x, boor[i + 1].x, boor[i + 2].x, boor[i + 3].x);
@@ -52,49 +52,78 @@ void BSplineCurveEvaluator::evaluateCurve(const std::vector<Point>& ptvCtrlPts,
 		{
 			Vec4f T( pow(t, 3), pow(t, 2), t, 1);
 			Vec4f res(T * Q / 6.0);
-			if (res * xx <= fAniLength)
+			// if (res * xx <= fAniLength)
+			// {
+			// 	bound = res * yy;
+			// 	used = 1;
+			// 	ptvEvaluatedCurvePts.push_back( Point( res * xx, res * yy ) );
+			// }
+			// else
+			// 	ptvEvaluatedCurvePts.push_back( Point( res * xx - fAniLength, res * yy ) );
+			if (res * xx <= fAniLength && res * xx >= 0)
 			{
 				bound = res * yy;
-				used = 1;
-				ptvEvaluatedCurvePts.push_back( Point( res * xx, res * yy ) );
+				ptvEvaluatedCurvePts.push_back( Point( res * xx, res * yy ));
 			}
-			else
-				ptvEvaluatedCurvePts.push_back( Point( res * xx - fAniLength, res * yy ) );
+			else if (res * xx > fAniLength)
+			{
+				used = 1;
+				ptvEvaluatedCurvePts.push_back( Point( res * xx - fAniLength, res * yy ));
+			}
+			else if (res * xx < 0)
+			{
+				touched = 1;
+				start = res * yy;
+				ptvEvaluatedCurvePts.push_back( Point( res * xx + fAniLength, res * yy ));
+			}
 		}
 	}
 
-	float x = 0.0;
-	float y1;
+	// float x = 0.0;
+	// float y1;
 
-	int iCtrlPtCount = ptvCtrlPts.size();
+	// int iCtrlPtCount = ptvCtrlPts.size();
 
-	if (bWrap)
-	{
-		if (used)
-			y1 = bound;
-		else if ((ptvCtrlPts[0].x + fAniLength) - ptvCtrlPts[iCtrlPtCount - 1].x > 0.0f) {
-			y1 = (ptvCtrlPts[0].y * (fAniLength - ptvCtrlPts[iCtrlPtCount - 1].x) + 
-				  ptvCtrlPts[iCtrlPtCount - 1].y * ptvCtrlPts[0].x) /
-				 (ptvCtrlPts[0].x + fAniLength - ptvCtrlPts[iCtrlPtCount - 1].x);
-		}
-		else 
-			y1 = ptvCtrlPts[0].y;
-	}
-	else
-		y1 = ptvCtrlPts[0].y;
+	// if (bWrap)
+	// {
+	// 	if (used)
+	// 		y1 = bound;
+	// 	else if ((ptvCtrlPts[0].x + fAniLength) - ptvCtrlPts[iCtrlPtCount - 1].x > 0.0f) {
+	// 		y1 = (ptvCtrlPts[0].y * (fAniLength - ptvCtrlPts[iCtrlPtCount - 1].x) + 
+	// 			  ptvCtrlPts[iCtrlPtCount - 1].y * ptvCtrlPts[0].x) /
+	// 			 (ptvCtrlPts[0].x + fAniLength - ptvCtrlPts[iCtrlPtCount - 1].x);
+	// 	}
+	// 	else 
+	// 		y1 = ptvCtrlPts[0].y;
+	// }
+	// else
+	// 	y1 = ptvCtrlPts[0].y;
 
-	ptvEvaluatedCurvePts.push_back(Point(x, y1));
+	// ptvEvaluatedCurvePts.push_back(Point(x, y1));
+	if (!bWrap)
+		ptvEvaluatedCurvePts.push_back( Point(fAniLength, ptvEvaluatedCurvePts.back().y) );
+	// else if (touched)
+	// 	ptvEvaluatedCurvePts.push_back( Point(fAniLength, start) );
+	// else
+	// 	ptvEvaluatedCurvePts.push_back( Point(fAniLength, ptvEvaluatedCurvePts.begin()->y) );
 
-	float y2;
-    x = fAniLength;
-    if (bWrap && iCtrlPtCount <= 3)
-	{
-		y2 = y1;
-		ptvEvaluatedCurvePts.push_back(Point(x, y2));
-	}
-    else if (!bWrap)
-	{
-		y2 = ptvCtrlPts[iCtrlPtCount - 1].y;
-		ptvEvaluatedCurvePts.push_back(Point(x, y2));
-	}
+	if (!bWrap)
+		ptvEvaluatedCurvePts.push_back( Point(0, ptvEvaluatedCurvePts.front().y) );
+	// else if (used)
+	// 	ptvEvaluatedCurvePts.push_back( Point(0, bound) );
+	// else
+	// 	ptvEvaluatedCurvePts.push_back( Point(0, (ptvEvaluatedCurvePts.end() - 1)->y) );
+
+	// float y2;
+    // x = fAniLength;
+    // if (bWrap && iCtrlPtCount <= 3)
+	// {
+	// 	y2 = y1;
+	// 	ptvEvaluatedCurvePts.push_back(Point(x, y2));
+	// }
+    // else if (!bWrap)
+	// {
+	// 	y2 = ptvCtrlPts[iCtrlPtCount - 1].y;
+	// 	ptvEvaluatedCurvePts.push_back(Point(x, y2));
+	// }
 }
