@@ -105,8 +105,17 @@
     <ClCompile Include="bsplinecurveevaluator.cpp">
       <Filter>Source Files\Curves</Filter>
     </ClCompile>
-    <ClCompile Include="catmullcurveevaluator.cpp">
-      <Filter>Source Files\Curves</Filter>
+    <ClCompile Include="drawbody.cpp">
+      <Filter>Source Files\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="complexshape.cpp">
+      <Filter>Source Files\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="ik.cpp">
+      <Filter>Source Files\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="metaball.cpp">
+      <Filter>Source Files\Model</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -176,8 +185,17 @@
     <ClInclude Include="bsplinecurveevaluator.h">
       <Filter>Header Files\Curves.</Filter>
     </ClInclude>
-    <ClInclude Include="catmullcurveevaluator.h">
-      <Filter>Header Files\Curves.</Filter>
+    <ClInclude Include="drawbody.h">
+      <Filter>Header Files\Model.</Filter>
+    </ClInclude>
+    <ClInclude Include="complexshape.h">
+      <Filter>Header Files\Model.</Filter>
+    </ClInclude>
+    <ClInclude Include="ik.h">
+      <Filter>Header Files\Model.</Filter>
+    </ClInclude>
+    <ClInclude Include="metaball.h">
+      <Filter>Header Files\Model.</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
