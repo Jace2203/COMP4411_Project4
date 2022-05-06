@@ -197,6 +197,17 @@ void SampleModel::draw()
 
 	// glTranslated(10, -10, 10);
 	// drawSkyBox(20, 20, 20);
+
+	float currentColor[4];
+    glGetFloatv(GL_CURRENT_COLOR,currentColor);
+		setDiffuseColor(0.0, 0.0, 1.0);
+		glPushMatrix();
+			glScaled(10, 1, 10);
+			glTranslated(-0.5, -1.2, -0.5);
+			callList(8);
+		glPopMatrix();
+    setDiffuseColor(currentColor[0], currentColor[1], currentColor[2]);
+
 	int size = 70;
 
 	glPushMatrix();

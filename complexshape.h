@@ -9,6 +9,8 @@ void drawTurret3();
 
 void drawShip();
 
+void drawHeightfield();
+
 void drawTriangles(int num, const Vec3f* v_buffer, const int* i_buffer);
 
 #endif

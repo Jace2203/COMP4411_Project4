@@ -505,7 +505,7 @@ void Initial(MetaballContainer* left, MetaballContainer* right)
 {
 	if (displaylistID) return;
 
-	displaylistID = glGenLists(7); // total num of list
+	displaylistID = glGenLists(9); // total num of list
 
     // define listssss
 	glNewList(displaylistID, GL_COMPILE);
@@ -534,6 +534,14 @@ void Initial(MetaballContainer* left, MetaballContainer* right)
 
     glNewList(displaylistID + 6, GL_COMPILE);
 		drawShip();
+	glEndList();
+
+    glNewList(displaylistID + 7, GL_COMPILE);
+		drawSphere(1.0);
+	glEndList();
+
+    glNewList(displaylistID + 8, GL_COMPILE);
+		drawHeightfield();
 	glEndList();
 }
 
