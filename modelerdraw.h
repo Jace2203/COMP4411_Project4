@@ -106,5 +106,6 @@ void drawTriangle( double x1, double y1, double z1,
 void drawtorus(Dot*** draw_pts, int num_t, double RY, double RUX);
 void drawCurve(Dot*** draw_pts, int num_t, double back_y);
 void calpoint(Dot* ctl, Dot** point, int num_pts, int num_t);
+void drawSkyBox( double x, double y, double z );
 
 #endif

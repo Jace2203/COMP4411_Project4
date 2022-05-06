@@ -34,6 +34,12 @@
 static GLfloat lightPosition0[] = { 4, 2, -4, 0 };
 static GLfloat lightDiffuse0[]  = { 1,1,1,1 };
 
+
+static GLfloat lightPosition1[] = {  5, 5, 5, 0 };
+// static GLfloat lightPosition1[] = {  10,  10,  10, 0 };
+static GLfloat lightPosition2[] = { -5, -5, -5, 0 };
+
+
 class Dot;
 
 // To make a SampleModel, we inherit off of ModelerView
@@ -177,12 +183,27 @@ void SampleModel::draw()
 	lightPosition0[1] = VAL(LIGHTY);
 	lightPosition0[2] = VAL(LIGHTZ);
 
+	glLightfv( GL_LIGHT0, GL_POSITION, lightPosition1 );
+	glLightfv( GL_LIGHT0, GL_DIFFUSE, lightDiffuse0 );
+
+	glLightfv( GL_LIGHT1, GL_POSITION, lightPosition2 );
+	glLightfv( GL_LIGHT1, GL_DIFFUSE, lightDiffuse0 );
+
 	lightDiffuse0[0] = VAL(LIGHTR);
 	lightDiffuse0[1] = VAL(LIGHTG);
 	lightDiffuse0[2] = VAL(LIGHTB);
 	
-	glLightfv( GL_LIGHT0, GL_POSITION, lightPosition0 );
-    glLightfv( GL_LIGHT0, GL_DIFFUSE, lightDiffuse0 );
+	// glLightfv( GL_LIGHT0, GL_POSITION, lightPosition0 );
+    // glLightfv( GL_LIGHT0, GL_DIFFUSE, lightDiffuse0 );
+
+	// glTranslated(10, -10, 10);
+	// drawSkyBox(20, 20, 20);
+	int size = 70;
+
+	glPushMatrix();
+		glTranslated(- size / 2, - size / 2, - size / 2);
+		drawSkyBox(size, size, size);
+	glPopMatrix();
 
 	if (VAL(APPLY_IK))
 	{

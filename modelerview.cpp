@@ -113,10 +113,10 @@ void ModelerView::draw()
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     m_camera->applyViewingTransform();
 
-    glLightfv( GL_LIGHT0, GL_POSITION, lightPosition0 );
-    glLightfv( GL_LIGHT0, GL_DIFFUSE, lightDiffuse0 );
-    glLightfv( GL_LIGHT1, GL_POSITION, lightPosition1 );
-    glLightfv( GL_LIGHT1, GL_DIFFUSE, lightDiffuse1 );
+    // glLightfv( GL_LIGHT0, GL_POSITION, lightPosition0 );
+    // glLightfv( GL_LIGHT0, GL_DIFFUSE, lightDiffuse0 );
+    // glLightfv( GL_LIGHT1, GL_POSITION, lightPosition1 );
+    // glLightfv( GL_LIGHT1, GL_DIFFUSE, lightDiffuse1 );
 
 	// If particle system exists, draw it
 	ParticleSystem *ps = ModelerApplication::Instance()->GetParticleSystem();

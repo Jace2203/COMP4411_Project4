@@ -3,6 +3,7 @@
 #include <GL/glu.h>
 #include <cstdio>
 
+#include "bitmap.h"
 #include <cmath>
 #define M_PI 3.141592653589793238462643383279502f
 // ********************************************************
@@ -692,4 +693,93 @@ void drawCurve(Dot*** draw_pts, int num_t, double back_y)
     }
 
     glPopMatrix();
+}
+
+void drawSkyBox( double x, double y, double z )
+{
+    int width, height;
+    unsigned char *tex = readBMP("texture/skybox.bmp", width, height);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, tex );
+
+    ModelerDrawState *mds = ModelerDrawState::Instance();
+
+	_setupOpenGl();
+    
+    if (mds->m_rayFile)
+    {
+        _dump_current_modelview();
+        fprintf(mds->m_rayFile,  
+            "scale(%f,%f,%f,translate(0.5,0.5,0.5,box {\n", x, y, z );
+        _dump_current_material();
+        fprintf(mds->m_rayFile,  "})))\n" );
+    }
+    else
+    {
+
+        /* remember which matrix mode OpenGL was in. */
+        int savemode;
+        glGetIntegerv( GL_MATRIX_MODE, &savemode );
+        
+        /* switch to the model matrix and scale by x,y,z. */
+        glMatrixMode( GL_MODELVIEW );
+        glPushMatrix();
+        glScaled( x, y, z );
+
+        glEnable(GL_TEXTURE_2D);
+        
+        glBegin( GL_QUADS );
+        
+        glNormal3d( 0.0, 0.0, -1.0 );
+        glTexCoord2f(0.00, 1/3.0); glVertex3d( 0.0, 0.0, 0.0 ); 
+        glTexCoord2f(0.00, 2/3.0); glVertex3d( 0.0, 1.0, 0.0 ); 
+        glTexCoord2f(0.25, 2/3.0); glVertex3d( 1.0, 1.0, 0.0 ); 
+        glTexCoord2f(0.25, 1/3.0); glVertex3d( 1.0, 0.0, 0.0 ); 
+        
+        glNormal3d( 0.0, -1.0, 0.0 );
+        glTexCoord2f(0.50, 1/3.0); glVertex3d( 0.0, 0.0, 0.0 ); 
+        glTexCoord2f(0.75, 1/3.0); glVertex3d( 1.0, 0.0, 0.0 );
+        glTexCoord2f(0.75, 0/3.0); glVertex3d( 1.0, 0.0, 1.0 ); 
+        glTexCoord2f(0.50, 0/3.0); glVertex3d( 0.0, 0.0, 1.0 );
+        
+        glNormal3d( -1.0, 0.0, 0.0 );
+        glTexCoord2f(1.00, 1/3.0); glVertex3d( 0.0, 0.0, 0.0 ); 
+        glTexCoord2f(0.75, 1/3.0); glVertex3d( 0.0, 0.0, 1.0 );
+        glTexCoord2f(0.75, 2/3.0); glVertex3d( 0.0, 1.0, 1.0 ); 
+        glTexCoord2f(1.00, 2/3.0); glVertex3d( 0.0, 1.0, 0.0 );
+        
+        glNormal3d( 0.0, 0.0, 1.0 );
+        glTexCoord2f(0.75, 1/3.0); glVertex3d( 0.0, 0.0, 1.0 ); 
+        glTexCoord2f(0.50, 1/3.0); glVertex3d( 1.0, 0.0, 1.0 );
+        glTexCoord2f(0.50, 2/3.0); glVertex3d( 1.0, 1.0, 1.0 ); 
+        glTexCoord2f(0.75, 2/3.0); glVertex3d( 0.0, 1.0, 1.0 );
+        
+        glNormal3d( 0.0, 1.0, 0.0 );
+        glTexCoord2f(0.50, 2/3.0); glVertex3d( 0.0, 1.0, 0.0 ); 
+        glTexCoord2f(0.50, 3/3.0); glVertex3d( 0.0, 1.0, 1.0 );
+        glTexCoord2f(0.75, 3/3.0); glVertex3d( 1.0, 1.0, 1.0 ); 
+        glTexCoord2f(0.75, 2/3.0); glVertex3d( 1.0, 1.0, 0.0 );
+        
+        glNormal3d( 1.0, 0.0, 0.0 );
+        glTexCoord2f(0.25, 1/3.0); glVertex3d( 1.0, 0.0, 0.0 ); 
+        glTexCoord2f(0.25, 2/3.0); glVertex3d( 1.0, 1.0, 0.0 );
+        glTexCoord2f(0.50, 2/3.0); glVertex3d( 1.0, 1.0, 1.0 ); 
+        glTexCoord2f(0.50, 1/3.0); glVertex3d( 1.0, 0.0, 1.0 );
+        
+        glEnd();
+        
+        glDisable(GL_TEXTURE_2D);
+        /* restore the model matrix stack, and switch back to the matrix
+        mode we were in. */
+        glPopMatrix();
+        glMatrixMode( savemode );
+    }
+
+    delete tex;
 }
