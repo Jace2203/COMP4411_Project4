@@ -3,6 +3,7 @@
 #include <assert.h>
 #include "vec.h"
 #include "mat.h"
+#include "modelerapp.h"
 
 void BezierCurveEvaluator::evaluateCurve(const std::vector<Point>& ptvCtrlPts, 
 										 std::vector<Point>& ptvEvaluatedCurvePts, 
@@ -10,7 +11,11 @@ void BezierCurveEvaluator::evaluateCurve(const std::vector<Point>& ptvCtrlPts,
 										 const bool& bWrap) const
 {
 	ptvEvaluatedCurvePts.clear();
-	double epsilon = 0.01;
+
+	float epsilon = ModelerApplication::Instance()->GetEpsilon();
+	bool adaptive = ModelerApplication::Instance()->GetAdaptiveBcurce();
+
+	printf("%d\n", adaptive);
 
 	Mat4f Q( -1, +3, -3, +1,
 		+3, -6, +3, +0,
@@ -42,23 +47,26 @@ void BezierCurveEvaluator::evaluateCurve(const std::vector<Point>& ptvCtrlPts,
 			Vec4f xx( ctrl[ctrl.size() - iCtrlPtCount + 0].x, ctrl[ctrl.size() - iCtrlPtCount + 1].x, ctrl[ctrl.size() - iCtrlPtCount + 2].x, ctrl[ctrl.size() - iCtrlPtCount + 3].x);
 			Vec4f yy( ctrl[ctrl.size() - iCtrlPtCount + 0].y, ctrl[ctrl.size() - iCtrlPtCount + 1].y, ctrl[ctrl.size() - iCtrlPtCount + 2].y, ctrl[ctrl.size() - iCtrlPtCount + 3].y);
 
-			displayBezier(V0, V1, V2, V3, epsilon, ptvEvaluatedCurvePts);
-
-			// for(float t = 0; t <= 1; t += 0.01)
-			// {
-			// 	Vec4f T( pow(t, 3), pow(t, 2), t, 1);
-			// 	Vec4f res(T * Q);
-			// 	if (res * xx <= fAniLength)
-			// 	{
-			// 		bound = res * yy;
-			// 		ptvEvaluatedCurvePts.push_back( Point( res * xx, res * yy ));
-			// 	}
-			// 	else
-			// 	{
-			// 		used = 1;
-			// 		ptvEvaluatedCurvePts.push_back( Point( res * xx - fAniLength, res * yy ));
-			// 	}
-			// }
+			if (adaptive)
+				displayBezier(V0, V1, V2, V3, epsilon, ptvEvaluatedCurvePts);
+			else
+			{
+				for(float t = 0; t <= 1; t += 0.01)
+				{
+					Vec4f T( pow(t, 3), pow(t, 2), t, 1);
+					Vec4f res(T * Q);
+					if (res * xx <= fAniLength)
+					{
+						bound = res * yy;
+						ptvEvaluatedCurvePts.push_back( Point( res * xx, res * yy ));
+					}
+					else
+					{
+						used = 1;
+						ptvEvaluatedCurvePts.push_back( Point( res * xx - fAniLength, res * yy ));
+					}
+				}
+			}
 
 			iCtrlPtCount -= 3;
 		}
@@ -105,7 +113,7 @@ void BezierCurveEvaluator::evaluateCurve(const std::vector<Point>& ptvCtrlPts,
 	printf("%d\n", ptvEvaluatedCurvePts.size());
 }
 
-void displayBezier(Point V0, Point V1, Point V2, Point V3, double epsilon, std::vector<Point>& ptvEvaluatedCurvePts)
+void displayBezier(Point V0, Point V1, Point V2, Point V3, float epsilon, std::vector<Point>& ptvEvaluatedCurvePts)
 {
 	if ((V0.distance(V1) + V1.distance(V2) + V2.distance(V3)) / V0.distance(V3) < 1 + epsilon)
 	{

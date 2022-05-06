@@ -53,6 +53,8 @@ public:
     void   SetControlValue(int controlNumber, double value);
 
 	float GetTension() const;
+	float GetEpsilon() const;
+	bool GetAdaptiveBcurce() const;
 
 	// Get and set particle system
 	ParticleSystem *GetParticleSystem();
