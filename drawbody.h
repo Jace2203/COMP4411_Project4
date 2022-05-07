@@ -27,7 +27,8 @@ enum {
     TURRENT3_ID,
     SHIP_ID,
     SPHERE_ID,
-    SNOW_ID
+    HF_ID,
+    NUM_OF_ID
 };
 
 enum {

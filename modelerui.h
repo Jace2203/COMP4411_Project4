@@ -43,6 +43,9 @@ public:
     void autoLoadNPlay();
 	float tension() const;
 	Camera* getCamera() const;
+	float epsilon() const;
+	bool adaptiveBcurce() const;
+	bool motionblur() const;
 
 protected:
 
@@ -67,6 +70,10 @@ private:
 	int m_iMovieFrameNum;
 
 	float m_fTension;
+	float m_fepsilon;
+
+	bool m_adaptiveBcurce;
+	bool m_motionblur;
 
 	inline void cb_openAniScript_i(Fl_Menu_*, void*);
 	static void cb_openAniScript(Fl_Menu_*, void*);
@@ -145,6 +152,15 @@ private:
 
 	inline void cb_tensionSlider_i(Fl_Slider*, void*);
 	static void cb_tensionSlider(Fl_Slider*, void*);
+
+	inline void cb_epsilonSlider_i(Fl_Slider*, void*);
+	static void cb_epsilonSlider(Fl_Slider*, void*);
+
+	inline void cb_adaptiveButton_i(Fl_Slider*, void*);
+	static void cb_adaptiveButton(Fl_Slider*, void*);
+
+	inline void cb_motionblurButton_i(Fl_Slider*, void*);
+	static void cb_motionblurButton(Fl_Slider*, void*);
 };
 
 #endif

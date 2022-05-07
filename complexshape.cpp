@@ -1,6 +1,7 @@
 #include "complexshape.h"
 
 #include "modelerdraw.h"
+#include "bitmap.h"
 
 void drawTurret2()
 {
@@ -498,4 +499,38 @@ void drawTriangles(int num, const Vec3f* v_buffer, const int* i_buffer)
         Vec3f c = v_buffer[i_buffer[i * 3 + 2]];
         drawTriangle(a[0], a[1], a[2], b[0], b[1], b[2], c[0], c[1], c[2]);
     }
+}
+
+void drawHeightfield()
+{
+    const int num_x = 100,
+              num_y = 100,
+              face  = (num_x - 1) * (num_y - 1) * 2;
+
+    int width, height;
+    unsigned char *grey = readBMP("texture/grey.bmp", width, height);
+
+    Vec3f vertex_buffer[num_x * num_x];
+    for(int i = 0; i < num_x; ++i)
+        for(int j = 0; j < num_x; ++j)
+        {
+            int a = int((i / float(num_x) * width + j / float(num_y) * width * width) * 3);
+            vertex_buffer[i + j * num_x] = Vec3f( i / float(num_x), grey[int((i / float(num_x) * width + j / float(num_y) * width * width) * 3)] / 255.0 * 0.4, j / float(num_x));
+        }
+
+    int index_buffer[face * 3];
+    for(int i = 0; i < num_x - 1; ++i)
+        for(int j = 0; j < num_x - 1; ++j)
+        {
+            index_buffer[(i + j * (num_x - 1)) * 6 + 0] = i + j * num_x;
+            index_buffer[(i + j * (num_x - 1)) * 6 + 1] = i + j * num_x + 1;
+            index_buffer[(i + j * (num_x - 1)) * 6 + 2] = i + (j + 1) * num_x + 1;
+            index_buffer[(i + j * (num_x - 1)) * 6 + 3] = i + (j + 1) * num_x + 1;
+            index_buffer[(i + j * (num_x - 1)) * 6 + 4] = i + (j + 1) * num_x;
+            index_buffer[(i + j * (num_x - 1)) * 6 + 5] = i + j * num_x;
+        }
+
+    drawTriangles(face, vertex_buffer, index_buffer);
+
+    delete []grey;
 }

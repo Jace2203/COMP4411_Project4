@@ -33,6 +33,7 @@
 #include "billboard.h"
 
 #include "cmath"
+#include "bitmap.h"
 
 static GLfloat lightPosition0[] = { 4, 2, -4, 0 };
 static GLfloat lightDiffuse0[]  = { 1,1,1,1 };
@@ -65,6 +66,7 @@ class SampleModel : public ModelerView
 	Billboard* snow = nullptr;
 	Billboard* right_questionmark = nullptr;
 
+	std::vector<unsigned char*> lastimage;
 public:
     SampleModel(int x, int y, int w, int h, char *label) 
     : ModelerView(x,y,w,h,label)
@@ -152,6 +154,9 @@ public:
 			if (draw_pts[i]) delete[] draw_pts[i];
 			if (torus[i]) delete[] torus[i];
 		}
+
+		for(auto it = lastimage.begin(); it != lastimage.end(); ++it)
+			delete []*it;
 	}
 
     virtual void draw();
@@ -212,6 +217,7 @@ void SampleModel::draw()
 
 	// glTranslated(10, -10, 10);
 	// drawSkyBox(20, 20, 20);
+
 	int size = 70;
 	int mirror_x = 7;
 
@@ -289,6 +295,16 @@ void SampleModel::draw()
 		glTranslated(- size / 2, - size / 2, - size / 2);
 		drawSkyBox(size, size, size);
 	glPopMatrix();
+
+	float currentColor[4];
+    glGetFloatv(GL_CURRENT_COLOR,currentColor);
+		setDiffuseColor(0.0, 0.0, 1.0);
+		glPushMatrix();
+			glScaled(10, 1, 10);
+			glTranslated(-0.5, -1.2, -0.5);
+			callList(HF_ID);
+		glPopMatrix();
+    setDiffuseColor(currentColor[0], currentColor[1], currentColor[2]);
 
 	glPushMatrix();
 		glTranslated(VAL(XPOS), VAL(YPOS), VAL(ZPOS));
@@ -421,6 +437,15 @@ void SampleModel::draw()
 				drawSkyBox(size, size, size);
 			glPopMatrix();
 
+			glGetFloatv(GL_CURRENT_COLOR,currentColor);
+				setDiffuseColor(0.0, 0.0, 1.0);
+				glPushMatrix();
+					glScaled(10, 1, 10);
+					glTranslated(-0.5, -1.2, -0.5);
+					callList(HF_ID);
+				glPopMatrix();
+			setDiffuseColor(currentColor[0], currentColor[1], currentColor[2]);
+
 			glPushMatrix();
 				glTranslated(VAL(XPOS), VAL(YPOS), VAL(ZPOS));
 				// int lod = int(VAL(LOD));
@@ -522,6 +547,55 @@ void SampleModel::draw()
 	glPopMatrix();
 
 	glDisable(GL_STENCIL_TEST);
+
+	int xx = x();
+	int yy = y();
+	int ww = w();
+	int hh = h();
+
+	unsigned char *temp = new unsigned char[3 * ModelerView::w() * ModelerView::h()];
+
+	glReadBuffer(GL_BACK);
+
+    glPixelStorei(GL_PACK_ALIGNMENT, 1);
+    glPixelStorei(GL_PACK_ROW_LENGTH, ww);
+    
+    glReadPixels( 0, 0, ww, hh, 
+		GL_RGB, GL_UNSIGNED_BYTE, 
+		temp );
+
+	lastimage.push_back(temp);
+
+	int image_num = 5;
+
+	if (lastimage.size() >= image_num)
+	{
+		while (lastimage.size() > image_num)
+		{
+			delete []lastimage.front();
+			lastimage.erase(lastimage.begin());
+		}
+
+		if (ModelerApplication::Instance()->GetMotionBlur())
+		{
+			temp = new unsigned char[3 * ModelerView::w() * ModelerView::h()]{};
+			for(auto it = 0; it != image_num; ++it)
+			{
+				for(int i = 0; i < 3 * ModelerView::w() * ModelerView::h(); ++i)
+					temp[i] += *(lastimage[it] + i) * 1.0 / image_num;
+			}
+			
+			glDrawPixels( ww, 
+				hh, 
+				GL_RGB, 
+				GL_UNSIGNED_BYTE, 
+				temp);
+
+			delete []temp;
+		}
+	}
+
+	endDraw();
 }
 
 int main()
