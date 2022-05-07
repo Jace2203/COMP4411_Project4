@@ -31,6 +31,7 @@
 #include "ik.h"
 
 #include "cmath"
+#include "bitmap.h"
 static GLfloat lightPosition0[] = { 4, 2, -4, 0 };
 static GLfloat lightDiffuse0[]  = { 1,1,1,1 };
 
@@ -59,6 +60,7 @@ class SampleModel : public ModelerView
 	Dot** draw_pts = nullptr;
 	Dot** torus = nullptr;
 
+	std::vector<unsigned char*> lastimage;
 public:
     SampleModel(int x, int y, int w, int h, char *label) 
     : ModelerView(x,y,w,h,label)
@@ -143,6 +145,9 @@ public:
 			if (draw_pts[i]) delete[] draw_pts[i];
 			if (torus[i]) delete[] torus[i];
 		}
+
+		for(auto it = lastimage.begin(); it != lastimage.end(); ++it)
+			delete []*it;
 	}
 
     virtual void draw();
@@ -375,6 +380,56 @@ void SampleModel::draw()
 
 		glPopMatrix();
 	glPopMatrix();
+
+	int xx = x();
+	int yy = y();
+	int ww = w();
+	int hh = h();
+
+	unsigned char *temp = new unsigned char[3 * ModelerView::w() * ModelerView::h()];
+
+	glReadBuffer(GL_BACK);
+
+    glPixelStorei(GL_PACK_ALIGNMENT, 1);
+    glPixelStorei(GL_PACK_ROW_LENGTH, ww);
+    
+    glReadPixels( 0, 0, ww, hh, 
+		GL_RGB, GL_UNSIGNED_BYTE, 
+		temp );
+
+	lastimage.push_back(temp);
+
+	printf("%d\n", lastimage.size());
+
+	int image_num = 5;
+
+	if (lastimage.size() >= image_num)
+	{
+		while (lastimage.size() > image_num)
+		{
+			delete []lastimage.front();
+			lastimage.erase(lastimage.begin());
+		}
+
+		temp = new unsigned char[3 * ModelerView::w() * ModelerView::h()]{};
+		for(auto it = 0; it != image_num; ++it)
+		{
+			for(int i = 0; i < 3 * ModelerView::w() * ModelerView::h(); ++i)
+				temp[i] += *(lastimage[it] + i) * 1.0 / image_num;
+		}
+		
+		glDrawPixels( ww, 
+			hh, 
+			GL_RGB, 
+			GL_UNSIGNED_BYTE, 
+			temp);
+
+		delete []temp;
+
+		glFlush();
+	}
+
+	// endDraw();
 }
 
 int main()
