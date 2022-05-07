@@ -26,6 +26,8 @@
 #include "particle.h"
 #include "camera.h"
 
+#include "billboard.h"
+
 extern std::vector<Vec4f*> particle_spawn;
 
 class ParticleSystem {
@@ -86,6 +88,8 @@ protected:
 	std::vector<std::vector<Particle>> particles;
 	std::vector<Particle*> new_p;
 	std::vector<std::function<Vec3f(Vec3f)>> forces;
+
+	Billboard* snow;
 
 	/** Some baking-related state **/
 	float bake_fps;						// frame rate at which simulation was baked

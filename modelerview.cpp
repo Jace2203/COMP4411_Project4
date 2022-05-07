@@ -101,6 +101,7 @@ void ModelerView::draw()
 		glEnable( GL_LIGHT0 );
         glEnable( GL_LIGHT1 );
 		glEnable( GL_NORMALIZE );
+		glEnable( GL_BLEND );
     }
 
   	glViewport( 0, 0, w(), h() );
@@ -112,6 +113,8 @@ void ModelerView::draw()
 	glLoadIdentity();
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     m_camera->applyViewingTransform();
+
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     // glLightfv( GL_LIGHT0, GL_POSITION, lightPosition0 );
     // glLightfv( GL_LIGHT0, GL_DIFFUSE, lightDiffuse0 );

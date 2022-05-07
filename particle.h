@@ -2,6 +2,7 @@
 #define PARTICLE_H
 
 #include "vec.h"
+#include "billboard.h"
 
 struct Particle
 {
@@ -11,6 +12,8 @@ struct Particle
     float m;
 
     float t;
+
+    void draw(float t, bool bill = false, Billboard* b = nullptr);
 };
 
 #endif

@@ -10,7 +10,6 @@
 #include <limits.h>
 
 #include "modelerdraw.h"
-#include "drawbody.h"
 
 std::vector<Vec4f*> particle_spawn;
 
@@ -21,6 +20,7 @@ std::vector<Vec4f*> particle_spawn;
 ParticleSystem::ParticleSystem()
 : bake_fps(0.0f), bake_start_time(0.0f), bake_end_time(0.0f), simulate(false), dirty(false)
 {
+	snow = new Billboard("texture/snow.png");
 }
 
 
@@ -34,6 +34,7 @@ ParticleSystem::ParticleSystem()
 ParticleSystem::~ParticleSystem() 
 {
 	clearBaked();
+	delete snow;
 }
 
 
@@ -167,16 +168,7 @@ void ParticleSystem::drawParticles(float t)
 	for (auto it = p.begin(); it != p.end(); it++)
 	{
 		Particle p = *it;
-		glPushMatrix();
-
-		setDiffuseColor((t - p.t) / 2.0f, (t - p.t) / 2.0f, 1.0f);
-		glTranslatef(p.p[0], p.p[1], p.p[2]);
-
-		// drawSphere(p.m * 0.02f);
-		glScaled(p.m * 0.02f, p.m * 0.02f, p.m * 0.02f);
-		callList(7);
-
-		glPopMatrix();
+		p.draw(t, true, snow);
 	}
 	setDiffuseColor(currentColor[0], currentColor[1], currentColor[2]);
 }
