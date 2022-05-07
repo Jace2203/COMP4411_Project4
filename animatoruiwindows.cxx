@@ -49,7 +49,7 @@ Fl_Menu_Item ModelerUIWindows::menu_m_pchoCurveType[] = {
 
 ModelerUIWindows::ModelerUIWindows() {
   Fl_Window* w;
-  { Fl_Window* o = m_pwndMainWnd = new Fl_Window(589, 705, "CSE 341 Animator (Sp02)");
+  { Fl_Window* o = m_pwndMainWnd = new Fl_Window(589, 705, "CS 341 Animator (Sp02)");
     w = o;
     o->color(185);
     o->labeltype(FL_NORMAL_LABEL);
@@ -84,7 +84,7 @@ ModelerUIWindows::ModelerUIWindows() {
         o->end();
         Fl_Group::current()->resizable(o);
       }
-      { Fl_Group* o = m_pgrpCurveGroup = new Fl_Group(160, 55, 425, 435, "Curves");
+      { Fl_Group* o = m_pgrpCurveGroup = new Fl_Group(160, 55, 425, 485, "Curves");
         o->labelsize(12);
         { Fl_Group* o = new Fl_Group(160, 55, 420, 410);
           { Fl_Box* o = new Fl_Box(160, 55, 40, 20, "Useless Box");
@@ -109,7 +109,7 @@ ModelerUIWindows::ModelerUIWindows() {
           o->end();
           Fl_Group::current()->resizable(o);
         }
-        { Fl_Group* o = new Fl_Group(160, 470, 420, 20);
+        { Fl_Group* o = new Fl_Group(160, 470, 420, 70);
           { Fl_Box* o = new Fl_Box(160, 470, 75, 20, "Curve Type:");
             o->labelsize(12);
             o->align(FL_ALIGN_LEFT|FL_ALIGN_INSIDE);
@@ -127,6 +127,25 @@ ModelerUIWindows::ModelerUIWindows() {
           }
           { Fl_Button* o = m_pbtZoomAll = new Fl_Button(505, 470, 75, 20, "Z&oom All");
             o->labelsize(12);
+            o->user_data((void*)(this));
+          }
+          { Fl_Value_Slider* o = m_TensionSlider = new Fl_Value_Slider(221, 497, 125, 18, "Tension:");
+            o->type(1);
+            o->minimum(0.01);
+            o->maximum(2);
+            o->value(0.5);
+            o->user_data((void*)(this));
+            o->align(FL_ALIGN_LEFT);
+          }
+          { Fl_Value_Slider* o = m_EpsilonSlider = new Fl_Value_Slider(225, 517, 125, 18, "Flatness:");
+            o->type(1);
+            o->minimum(0.01);
+            o->maximum(0.5);
+            o->value(0.05);
+            o->user_data((void*)(this));
+            o->align(FL_ALIGN_LEFT);
+          }
+          { Fl_Light_Button* o = m_adaptiveButton = new Fl_Light_Button(355, 515, 160, 25, "adaptive Bezier curve");
             o->user_data((void*)(this));
           }
           o->end();

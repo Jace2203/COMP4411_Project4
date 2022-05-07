@@ -132,6 +132,21 @@ void ModelerApplication::SetControlValue(int controlNumber, double value)
     m_ui->controlValue(controlNumber, value);
 }
 
+float ModelerApplication::GetTension() const
+{
+	return m_ui->tension();
+}
+
+float ModelerApplication::GetEpsilon() const
+{
+	return m_ui->epsilon();
+}
+
+bool ModelerApplication::GetAdaptiveBcurce() const
+{
+	return m_ui->adaptiveBcurce();
+}
+
 ParticleSystem *ModelerApplication::GetParticleSystem()
 {
 	return ps;

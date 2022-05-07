@@ -10,14 +10,14 @@ class ModelerUIWindows {open
   Function {ModelerUIWindows()} {open
   } {
     Fl_Window m_pwndMainWnd {
-      label {CS 341 Animator (Sp02)}
-      xywh {47 31 589 705} color 185 labeltype NORMAL_LABEL when 0 visible
+      label {CS 341 Animator (Sp02)} open
+      xywh {361 202 589 705} color 185 labeltype NORMAL_LABEL when 0 visible
     } {
-      Fl_Menu_Bar m_pmbMenuBar {selected
+      Fl_Menu_Bar m_pmbMenuBar {
         xywh {0 0 590 25} selection_color 137 labelsize 12 textsize 12
       } {
         submenu {} {
-          label {&File}
+          label {&File} selected
           xywh {0 0 100 20}
         } {
           menuitem m_pmiOpenAniScript {
@@ -89,7 +89,7 @@ class ModelerUIWindows {open
         xywh {5 55 145 440} type Multi selection_color 29 labeltype NO_LABEL textsize 10
       }
       Fl_Tabs m_ptabTab {
-        user_data this
+        user_data this open
         xywh {155 30 430 510} color 185 align 0
       } {
         Fl_Scroll m_pscrlScroll {
@@ -103,10 +103,10 @@ class ModelerUIWindows {open
           } {}
         }
         Fl_Group m_pgrpCurveGroup {
-          label Curves
-          xywh {160 55 425 435} labelsize 12
+          label Curves open
+          xywh {160 55 425 485} labelsize 12
         } {
-          Fl_Group {} {
+          Fl_Group {} {open
             private xywh {160 55 420 410} resizable
           } {
             Fl_Box {} {
@@ -131,8 +131,8 @@ class ModelerUIWindows {open
               class GraphWidget
             } {}
           }
-          Fl_Group {} {
-            xywh {160 470 420 20}
+          Fl_Group {} {open
+            xywh {160 470 420 70}
           } {
             Fl_Box {} {
               label {Curve Type:}
@@ -172,6 +172,21 @@ class ModelerUIWindows {open
               label {Z&oom All}
               user_data this
               xywh {505 470 75 20} labelsize 12
+            }
+            Fl_Value_Slider m_TensionSlider {
+              label {Tension:}
+              user_data this
+              xywh {221 497 125 18} type Horizontal align 4 minimum 0.01 maximum 2 value 0.5
+            }
+            Fl_Value_Slider m_EpsilonSlider {
+              label {Flatness:}
+              user_data this
+              xywh {225 517 125 18} type Horizontal align 4 minimum 0.01 maximum 0.5 value 0.05
+            }
+            Fl_Light_Button m_adaptiveButton {
+              label {adaptive Bezier curve}
+              user_data this
+              xywh {355 515 160 25}
             }
           }
         }

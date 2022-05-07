@@ -12,7 +12,7 @@
 #include "modelerdraw.h"
 #include "modelerapp.h"
 #include "particleSystem.h"
-#include "modeleruiwindows.h"
+#include "animatoruiwindows.h"
 
 class ModelerUI : public ModelerUIWindows
 {
@@ -41,6 +41,9 @@ public:
 	void simulate(bool bSimulate);
 	void redrawModelerView();
     void autoLoadNPlay();
+	float tension() const;
+	float epsilon() const;
+	bool adaptiveBcurce() const;
 
 protected:
 
@@ -63,6 +66,11 @@ private:
 	float m_fPlayStartTime, m_fPlayEndTime;
 	std::string m_strMovieFileName;
 	int m_iMovieFrameNum;
+
+	float m_fTension;
+	float m_fepsilon;
+
+	bool m_adaptiveBcurce;
 
 	inline void cb_openAniScript_i(Fl_Menu_*, void*);
 	static void cb_openAniScript(Fl_Menu_*, void*);
@@ -138,6 +146,15 @@ private:
 	inline void cb_loop_i(Fl_Light_Button*, void*);
 	static void cb_loop(Fl_Light_Button*, void*);
 	static void cb_timed(void *); // timed callback for animation
+
+	inline void cb_tensionSlider_i(Fl_Slider*, void*);
+	static void cb_tensionSlider(Fl_Slider*, void*);
+
+	inline void cb_epsilonSlider_i(Fl_Slider*, void*);
+	static void cb_epsilonSlider(Fl_Slider*, void*);
+
+	inline void cb_adaptiveButton_i(Fl_Slider*, void*);
+	static void cb_adaptiveButton(Fl_Slider*, void*);
 };
 
 #endif

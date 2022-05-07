@@ -581,6 +581,44 @@ void ModelerUI::cb_timed(void *p)
 	Fl::repeat_timeout(dt, cb_timed, (void *)pui);
 }
 
+void ModelerUI::cb_tensionSlider_i(Fl_Slider* o, void *v)
+{
+	m_fTension = (float)(o->value());
+}
+
+void ModelerUI::cb_tensionSlider(Fl_Slider* o, void *v)
+{
+	((ModelerUI*)(o->user_data()))->cb_tensionSlider_i(o,v);
+}
+
+void ModelerUI::cb_epsilonSlider_i(Fl_Slider* o, void *v)
+{
+	m_fepsilon = (float)(o->value());
+}
+
+void ModelerUI::cb_epsilonSlider(Fl_Slider* o, void *v)
+{
+	((ModelerUI*)(o->user_data()))->cb_epsilonSlider_i(o,v);
+}
+
+void ModelerUI::cb_adaptiveButton_i(Fl_Slider* o, void *v)
+{
+	m_adaptiveBcurce = !m_adaptiveBcurce;
+
+	if (m_adaptiveBcurce == 1) {
+		m_pwndGraphWidget->currCurveWrap(m_pwndGraphWidget->currCurveWrap());
+	}
+	else if (m_adaptiveBcurce == 0) {
+		m_pwndGraphWidget->currCurveWrap(m_pwndGraphWidget->currCurveWrap());
+	}
+	m_pwndGraphWidget->redraw();
+}
+
+void ModelerUI::cb_adaptiveButton(Fl_Slider* o, void *v)
+{
+	((ModelerUI*)(o->user_data()))->cb_adaptiveButton_i(o,v);
+}
+
 Fl_Box* ModelerUI::labelBox(int nBox) 
 {
   return (Fl_Box*)m_ppckPack->child(nBox * 2);
@@ -872,7 +910,10 @@ m_iCurrControlCount(0),
 m_pcbfValueChangedCallback(NULL),
 m_iFps(30),
 m_bAnimating(false),
-m_bSaveMovie(false)
+m_bSaveMovie(false),
+m_fTension(0.5f),
+m_fepsilon(0.05f),
+m_adaptiveBcurce(0)
 {
 	// setup all the callback functions...
 	m_pmiOpenAniScript->callback((Fl_Callback*)cb_openAniScript);
@@ -908,6 +949,9 @@ m_bSaveMovie(false)
 	m_pbtLoop->callback((Fl_Callback*)cb_loop);
 	m_pbtSimulate->callback((Fl_Callback*)cb_simulate);
 	m_psldrFPS->callback((Fl_Callback*)cb_fps);
+	m_TensionSlider->callback((Fl_Callback*)cb_tensionSlider);
+	m_EpsilonSlider->callback((Fl_Callback*)cb_epsilonSlider);
+	m_adaptiveButton->callback((Fl_Callback*)cb_adaptiveButton);
 
 	m_pwndMainWnd->callback((Fl_Callback*)cb_hide);
 	m_pwndMainWnd->when(FL_HIDE);
@@ -1005,4 +1049,19 @@ void ModelerUI::autoLoadNPlay()
 		simulate(true);
 		animate(true);
 	}
+}
+
+float ModelerUI::tension() const
+{
+	return m_fTension;
+}
+
+float ModelerUI::epsilon() const
+{
+	return m_fepsilon;
+}
+
+bool ModelerUI::adaptiveBcurce() const
+{
+	return m_adaptiveBcurce;
 }
