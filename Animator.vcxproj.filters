@@ -120,6 +120,9 @@
     <ClCompile Include="animatoruiwindows.cxx">
       <Filter>Source Files\Model</Filter>
     </ClCompile>
+    <ClCompile Include="laneriesenfeldcurveevaluator.cpp">
+      <Filter>Source Files\Curves</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="curve.h">
@@ -202,6 +205,9 @@
     </ClInclude>
     <ClInclude Include="metaball.h">
       <Filter>Header Files\Model.</Filter>
+    </ClInclude>
+    <ClInclude Include="laneriesenfeldcurveevaluator.h">
+      <Filter>Header Files\Curves.</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
