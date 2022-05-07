@@ -176,6 +176,7 @@ double ani_height = -(head_size + torso_height)/5,
 
 void SampleModel::draw()
 {
+	glDisable(GL_STENCIL_TEST);
 	Initial(metaball_container[1], metaball_container[0]);
 
 	ModelerView::draw();
@@ -184,8 +185,6 @@ void SampleModel::draw()
 		delete *(particle_spawn.begin());
 		particle_spawn.erase(particle_spawn.begin());
 	}
-	
-	glEnable( GL_LIGHT0 );
 
 	lightPosition0[0] = VAL(LIGHTX);
 	lightPosition0[1] = VAL(LIGHTY);
@@ -207,11 +206,7 @@ void SampleModel::draw()
 	// glTranslated(10, -10, 10);
 	// drawSkyBox(20, 20, 20);
 	int size = 70;
-
-	glPushMatrix();
-		glTranslated(- size / 2, - size / 2, - size / 2);
-		drawSkyBox(size, size, size);
-	glPopMatrix();
+	int mirror_x = 5;
 
 	if (VAL(APPLY_IK))
 	{
@@ -244,15 +239,6 @@ void SampleModel::draw()
 		}
 	}
 
-	//draw the floor
-	// setAmbientColor(.1f,.1f,.1f);
-	// setDiffuseColor(COLOR_RED);
-	// glPushMatrix();
-	// glTranslated(-5,-1,-5);
-	// drawBox(10,0.01f,10);
-	// glPopMatrix();
-
-	//if (ModelerApplication::Instance()->IsAnimating())
 	if (false)
 	{
 		if (cur_height <= ani_height)
@@ -290,7 +276,15 @@ void SampleModel::draw()
 	// m_camera->setModelTorso(Vec3f(VAL(XPOS), VAL(YPOS), VAL(ZPOS)));
 	// (*metaball_container)[1]->setCenter(Vec3d(VAL(XPOS), 0, 0));
 	// metaball_container->render();
-	
+
+	// Real World
+	ModelerView::drawPs();
+
+	glPushMatrix();
+		glTranslated(- size / 2, - size / 2, - size / 2);
+		drawSkyBox(size, size, size);
+	glPopMatrix();
+
 	glPushMatrix();
 		glTranslated(VAL(XPOS), VAL(YPOS), VAL(ZPOS));
 		// int lod = int(VAL(LOD));
@@ -373,6 +367,130 @@ void SampleModel::draw()
 
 		glPopMatrix();
 	glPopMatrix();
+
+	// Mirror
+	glStencilOp( GL_KEEP, GL_KEEP, GL_REPLACE );
+	glStencilFunc( GL_ALWAYS, 1, 1 );
+	glEnable( GL_STENCIL_TEST );
+
+	glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
+	glBegin(GL_TRIANGLES);
+		glVertex3f(mirror_x, -1.0, -2.0);
+		glVertex3f(mirror_x, -1.0,  2.0);
+		glVertex3f(mirror_x,  2.0,  2.0);
+
+		glVertex3f(mirror_x,  2.0,  2.0);
+		glVertex3f(mirror_x,  2.0, -2.0);
+		glVertex3f(mirror_x, -1.0, -2.0);
+	glEnd();
+	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+
+	glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+    glStencilFunc(GL_NOTEQUAL, 0, 1);
+	
+	glClear( GL_DEPTH_BUFFER_BIT );
+	
+	// Mirror World
+	glPushMatrix();
+		glTranslated(mirror_x, 0.0, 0.0);
+		glScaled(-1.0, 1.0, 1.0);
+		glTranslated(-mirror_x, 0.0, 0.0);
+		
+		{
+			ModelerView::drawPs();
+
+			glPushMatrix();
+				glTranslated(- size / 2, - size / 2, - size / 2);
+				drawSkyBox(size, size, size);
+			glPopMatrix();
+
+			glPushMatrix();
+				glTranslated(VAL(XPOS), VAL(YPOS), VAL(ZPOS));
+				// int lod = int(VAL(LOD));
+				int lod = 4;
+				
+				// if (ModelerApplication::Instance()->IsAnimating())
+				// 	glRotated(cur_angle, 0, 1, 0);
+					
+				// Torso
+				glPushMatrix();
+					glRotated(-90.0, 1.0, 0.0, 0.0);
+					glTranslated(0, 0, cur_height);
+
+					// drawTorso();
+					callList(0);
+
+					if (lod > 0)
+					{
+						// drawHead();
+						callList(1);
+
+						// double LZ = (ModelerApplication::Instance()->IsAnimating()) ? cur_wave : (VAL(MOOD) == 1) ? -45.0: (VAL(MOOD) == 2) ?  45.0: VAL(L_UPPER_ARM_ZROT),
+						// 	   RZ = (ModelerApplication::Instance()->IsAnimating()) ? cur_wave : (VAL(MOOD) == 1) ?  45.0: (VAL(MOOD) == 2) ? -45.0: VAL(R_UPPER_ARM_ZROT),
+						double LZ = (0) ? cur_wave : (VAL(MOOD) == 1) ? -45.0: (VAL(MOOD) == 2) ?  45.0: VAL(L_UPPER_ARM_ZROT),
+							RZ = (0) ? cur_wave : (VAL(MOOD) == 1) ?  45.0: (VAL(MOOD) == 2) ? -45.0: VAL(R_UPPER_ARM_ZROT),
+							LY = (VAL(MOOD) == 1) ? 135.0: (VAL(MOOD) == 2) ? 50: VAL(L_UPPER_ARM_YROT),
+							RY = (VAL(MOOD) == 1) ? 135.0: (VAL(MOOD) == 2) ? 50: VAL(R_UPPER_ARM_YROT),
+							LUX = (VAL(MOOD) == 1) ? 0 : (VAL(MOOD) == 2) ? -22.5: VAL(L_UPPER_ARM_XROT),
+							RUX = (VAL(MOOD) == 1) ? 0 : (VAL(MOOD) == 2) ? -22.5: VAL(R_UPPER_ARM_XROT),
+							LLAX = (VAL(MOOD) == 2) ? 95.0: VAL(L_LOWER_ARM_XROT),
+							RLAX = (VAL(MOOD) == 2) ? 95.0: VAL(R_LOWER_ARM_XROT);
+
+						// if (VAL(SHOW_TORUS))
+						if (true)
+							drawtorus(&torus, 21, LY, LUX);
+
+						drawArmL(LY, LZ, LLAX, LUX, metaball_container[1], lod - 1);
+						drawArmR(RY, RZ, RLAX, RUX, metaball_container[0], lod - 1);
+
+						// if (ModelerApplication::Instance()->IsAnimating())
+						if (false)
+						{
+							double LTX = -cur_theta,
+								RTX = -cur_theta,
+								LLX = 2*cur_theta, 
+								RLX = 2*cur_theta;
+
+							particle_spawn.push_back(drawLegL(LTX, VAL(L_THIGH_YROT), LLX, lod - 1));
+							particle_spawn.push_back(drawLegR(RTX, VAL(R_THIGH_YROT), RLX, lod - 1));
+						}
+						else if (VAL(APPLY_IK))
+						{
+							particle_spawn.push_back(drawLegL(angles_L[0], angles_L[1], angles_L[2], lod - 1));
+							particle_spawn.push_back(drawLegR(angles_R[0], angles_R[1], angles_R[2], lod - 1));
+						}
+						else
+						{
+							double LTX = (VAL(MOOD) == 1) ? 25.0: VAL(L_THIGH_XROT),
+								RTX = (VAL(MOOD) == 1) ? 25.0: VAL(R_THIGH_XROT),
+								LLX = (VAL(MOOD) == 1) ? 75.0: VAL(L_LEG_XROT),
+								RLX = (VAL(MOOD) == 1) ? 75.0: VAL(R_LEG_XROT);
+
+							particle_spawn.push_back(drawLegL(LTX, VAL(L_THIGH_YROT), LLX, lod - 1));
+							particle_spawn.push_back(drawLegR(RTX, VAL(R_THIGH_YROT), RLX, lod - 1));
+						}
+
+						setDiffuseColor(50.0/255, 75.0/255, 100.0/255);
+						drawEquipment(VAL(BACK_YROT), VAL(L_EQUIP_YROT), VAL(R_EQUIP_YROT), VAL(L_TURRET_YROT), VAL(R_TURRET_YROT), VAL(L_TURRET_XROT), VAL(R_TURRET_XROT), VAL(TURRET_NUM), lod);
+						setDiffuseColor(1, 1, 1);
+					}
+
+					if (lod > 1)
+					{
+						setDiffuseColor(50.0/255, 75.0/255, 100.0/255);
+						drawCurve(&draw_pts, 21, VAL(BACK_YROT));
+						if (VAL(DLS))
+							drawLsystem(VAL(IT), VAL(DV), VAL(IA), VAL(AOI), VAL(BACK_YROT));
+						setDiffuseColor(1, 1, 1);
+					}
+
+				glPopMatrix();
+			glPopMatrix();
+		}
+		glPopMatrix();
+	glPopMatrix();
+
+	glDisable(GL_STENCIL_TEST);
 }
 
 int main()

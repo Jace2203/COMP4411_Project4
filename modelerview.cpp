@@ -110,18 +110,25 @@ void ModelerView::draw()
 				
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glClearStencil(0);
+	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT );
     m_camera->applyViewingTransform();
 
     // glLightfv( GL_LIGHT0, GL_POSITION, lightPosition0 );
     // glLightfv( GL_LIGHT0, GL_DIFFUSE, lightDiffuse0 );
     // glLightfv( GL_LIGHT1, GL_POSITION, lightPosition1 );
     // glLightfv( GL_LIGHT1, GL_DIFFUSE, lightDiffuse1 );
-
-	// If particle system exists, draw it
+	
 	ParticleSystem *ps = ModelerApplication::Instance()->GetParticleSystem();
 	if (ps != NULL) {
 		ps->computeForcesAndUpdateParticles(t);
+	}
+}
+
+void ModelerView::drawPs()
+{
+	ParticleSystem *ps = ModelerApplication::Instance()->GetParticleSystem();
+	if (ps != NULL) {
 		ps->drawParticles(t);
 	}
 }

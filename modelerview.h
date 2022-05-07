@@ -26,6 +26,8 @@ public:
     virtual int handle(int event);
     virtual void draw();
 
+	void drawPs();
+
 	void setBMP(const char *fname);
 	void saveBMP(const char* szFileName);
 	void endDraw();
