@@ -619,6 +619,16 @@ void ModelerUI::cb_adaptiveButton(Fl_Slider* o, void *v)
 	((ModelerUI*)(o->user_data()))->cb_adaptiveButton_i(o,v);
 }
 
+void ModelerUI::cb_motionblurButton_i(Fl_Slider* o, void *v)
+{
+	m_motionblur = !m_motionblur;
+}
+
+void ModelerUI::cb_motionblurButton(Fl_Slider* o, void *v)
+{
+	((ModelerUI*)(o->user_data()))->cb_motionblurButton_i(o,v);
+}
+
 Fl_Box* ModelerUI::labelBox(int nBox) 
 {
   return (Fl_Box*)m_ppckPack->child(nBox * 2);
@@ -913,7 +923,8 @@ m_bAnimating(false),
 m_bSaveMovie(false),
 m_fTension(0.5f),
 m_fepsilon(0.05f),
-m_adaptiveBcurce(0)
+m_adaptiveBcurce(0),
+m_motionblur(0)
 {
 	// setup all the callback functions...
 	m_pmiOpenAniScript->callback((Fl_Callback*)cb_openAniScript);
@@ -952,6 +963,7 @@ m_adaptiveBcurce(0)
 	m_TensionSlider->callback((Fl_Callback*)cb_tensionSlider);
 	m_EpsilonSlider->callback((Fl_Callback*)cb_epsilonSlider);
 	m_adaptiveButton->callback((Fl_Callback*)cb_adaptiveButton);
+	m_motionblurButton->callback((Fl_Callback*)cb_motionblurButton);
 
 	m_pwndMainWnd->callback((Fl_Callback*)cb_hide);
 	m_pwndMainWnd->when(FL_HIDE);
@@ -1064,4 +1076,9 @@ float ModelerUI::epsilon() const
 bool ModelerUI::adaptiveBcurce() const
 {
 	return m_adaptiveBcurce;
+}
+
+bool ModelerUI::motionblur() const
+{
+	return m_motionblur;
 }

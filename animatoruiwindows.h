@@ -58,6 +58,7 @@ public:
   Fl_Value_Slider *m_TensionSlider;
   Fl_Value_Slider *m_EpsilonSlider;
   Fl_Light_Button *m_adaptiveButton;
+  Fl_Light_Button *m_motionblurButton;
   Fl_Button *m_pbtStepBack;
   Fl_Button *m_pbtPlay;
   Fl_Button *m_pbtStepForw;

@@ -109,7 +109,7 @@ ModelerUIWindows::ModelerUIWindows() {
           o->end();
           Fl_Group::current()->resizable(o);
         }
-        { Fl_Group* o = new Fl_Group(160, 470, 420, 70);
+        { Fl_Group* o = new Fl_Group(160, 465, 420, 75);
           { Fl_Box* o = new Fl_Box(160, 470, 75, 20, "Curve Type:");
             o->labelsize(12);
             o->align(FL_ALIGN_LEFT|FL_ALIGN_INSIDE);
@@ -146,6 +146,9 @@ ModelerUIWindows::ModelerUIWindows() {
             o->align(FL_ALIGN_LEFT);
           }
           { Fl_Light_Button* o = m_adaptiveButton = new Fl_Light_Button(355, 515, 160, 25, "adaptive Bezier curve");
+            o->user_data((void*)(this));
+          }
+          { Fl_Light_Button* o = m_motionblurButton = new Fl_Light_Button(485, 490, 95, 25, "motion blur");
             o->user_data((void*)(this));
           }
           o->end();

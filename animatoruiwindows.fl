@@ -11,13 +11,13 @@ class ModelerUIWindows {open
   } {
     Fl_Window m_pwndMainWnd {
       label {CS 341 Animator (Sp02)} open
-      xywh {361 202 589 705} color 185 labeltype NORMAL_LABEL when 0 visible
+      xywh {747 226 589 705} color 185 labeltype NORMAL_LABEL when 0 visible
     } {
       Fl_Menu_Bar m_pmbMenuBar {
         xywh {0 0 590 25} selection_color 137 labelsize 12 textsize 12
       } {
         submenu {} {
-          label {&File} selected
+          label {&File}
           xywh {0 0 100 20}
         } {
           menuitem m_pmiOpenAniScript {
@@ -132,7 +132,7 @@ class ModelerUIWindows {open
             } {}
           }
           Fl_Group {} {open
-            xywh {160 470 420 70}
+            xywh {160 465 420 75}
           } {
             Fl_Box {} {
               label {Curve Type:}
@@ -187,6 +187,11 @@ class ModelerUIWindows {open
               label {adaptive Bezier curve}
               user_data this
               xywh {355 515 160 25}
+            }
+            Fl_Light_Button m_motionblurButton {
+              label {motion blur}
+              user_data this
+              xywh {485 490 95 25}
             }
           }
         }
@@ -321,7 +326,7 @@ class ModelerUIWindows {open
         }
       }
       Fl_Box {} {
-        label {Model Controls}
+        label {Model Controls} selected
         xywh {5 30 145 25} color 7 labelfont 1 labelsize 18 labelcolor 7
       }
     }

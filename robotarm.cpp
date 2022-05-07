@@ -399,8 +399,6 @@ void SampleModel::draw()
 
 	lastimage.push_back(temp);
 
-	printf("%d\n", lastimage.size());
-
 	int image_num = 5;
 
 	if (lastimage.size() >= image_num)
@@ -411,25 +409,26 @@ void SampleModel::draw()
 			lastimage.erase(lastimage.begin());
 		}
 
-		temp = new unsigned char[3 * ModelerView::w() * ModelerView::h()]{};
-		for(auto it = 0; it != image_num; ++it)
+		if (ModelerApplication::Instance()->GetMotionBlur())
 		{
-			for(int i = 0; i < 3 * ModelerView::w() * ModelerView::h(); ++i)
-				temp[i] += *(lastimage[it] + i) * 1.0 / image_num;
+			temp = new unsigned char[3 * ModelerView::w() * ModelerView::h()]{};
+			for(auto it = 0; it != image_num; ++it)
+			{
+				for(int i = 0; i < 3 * ModelerView::w() * ModelerView::h(); ++i)
+					temp[i] += *(lastimage[it] + i) * 1.0 / image_num;
+			}
+			
+			glDrawPixels( ww, 
+				hh, 
+				GL_RGB, 
+				GL_UNSIGNED_BYTE, 
+				temp);
+
+			delete []temp;
 		}
-		
-		glDrawPixels( ww, 
-			hh, 
-			GL_RGB, 
-			GL_UNSIGNED_BYTE, 
-			temp);
-
-		delete []temp;
-
-		glFlush();
 	}
 
-	// endDraw();
+	endDraw();
 }
 
 int main()
