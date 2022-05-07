@@ -531,4 +531,6 @@ void drawHeightfield()
         }
 
     drawTriangles(face, vertex_buffer, index_buffer);
+
+    delete []grey;
 }
