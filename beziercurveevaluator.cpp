@@ -15,8 +15,6 @@ void BezierCurveEvaluator::evaluateCurve(const std::vector<Point>& ptvCtrlPts,
 	float epsilon = ModelerApplication::Instance()->GetEpsilon();
 	bool adaptive = ModelerApplication::Instance()->GetAdaptiveBcurce();
 
-	printf("%d\n", adaptive);
-
 	Mat4f Q( -1, +3, -3, +1,
 		+3, -6, +3, +0,
 		-3, +3, +0, +0, 
@@ -110,7 +108,7 @@ void BezierCurveEvaluator::evaluateCurve(const std::vector<Point>& ptvCtrlPts,
 		ptvEvaluatedCurvePts.push_back(Point(x, y2));
 	}
 
-	printf("%d\n", ptvEvaluatedCurvePts.size());
+	printf("Num of Points: %d\n", ptvEvaluatedCurvePts.size());
 }
 
 void displayBezier(Point V0, Point V1, Point V2, Point V3, float epsilon, std::vector<Point>& ptvEvaluatedCurvePts)
