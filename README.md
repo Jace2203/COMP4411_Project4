@@ -50,6 +50,9 @@ To create an impressionistic picture, the user loads an existing image and paint
 |8B| mouse/keyboard computer games (using IK)||
 
 ### HOW TO USE:
+#### Movie
+Movie is stored at `movie/`.
+
 #### Controling Tension of Catmull-Rom spline
 When select curve type `catmull-rom`, using the `Tension` slider can modify the tension value of catmull-rom spline.  
 Need to move the curve or press the `Wrap` button to update the curve.
