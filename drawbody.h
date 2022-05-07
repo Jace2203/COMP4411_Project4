@@ -4,6 +4,8 @@
 #include "vec.h"
 #include "mat.h"
 
+#include "billboard.h"
+
 const double torso_height = 1.2;
 const double head_size = 0.36;
 const double arm_length = 0.5;
@@ -14,6 +16,18 @@ class MetaballContainer;
 enum {
     RIGHT = -1,
     LEFT = 1
+};
+
+enum {
+    TORSO_ID,
+    HEAD_ID,
+    LEFT_METABALL_ID,
+    RIGHT_METABALL_ID,
+    TURRENT2_ID,
+    TURRENT3_ID,
+    SHIP_ID,
+    SPHERE_ID,
+    SNOW_ID
 };
 
 enum {

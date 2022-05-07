@@ -30,6 +30,7 @@
 #include "camera.h"
 #include "metaball.h"
 #include "ik.h"
+#include "billboard.h"
 
 #include "cmath"
 
@@ -60,6 +61,9 @@ class SampleModel : public ModelerView
 
 	Dot** draw_pts = nullptr;
 	Dot** torus = nullptr;
+
+	Billboard* snow = nullptr;
+	Billboard* right_questionmark = nullptr;
 
 public:
     SampleModel(int x, int y, int w, int h, char *label) 
@@ -115,6 +119,9 @@ public:
 		angles_R[0] = VAL(R_THIGH_XROT);
 		angles_R[1] = VAL(R_THIGH_YROT);
 		angles_R[2] = VAL(R_LEG_XROT);
+
+		snow = new Billboard("texture/snow.png");
+		right_questionmark = new Billboard("texture/right.png");
 	}
 
 	~SampleModel()
@@ -206,7 +213,7 @@ void SampleModel::draw()
 	// glTranslated(10, -10, 10);
 	// drawSkyBox(20, 20, 20);
 	int size = 70;
-	int mirror_x = 5;
+	int mirror_x = 7;
 
 	if (VAL(APPLY_IK))
 	{
@@ -278,8 +285,6 @@ void SampleModel::draw()
 	// metaball_container->render();
 
 	// Real World
-	ModelerView::drawPs();
-
 	glPushMatrix();
 		glTranslated(- size / 2, - size / 2, - size / 2);
 		drawSkyBox(size, size, size);
@@ -289,6 +294,7 @@ void SampleModel::draw()
 		glTranslated(VAL(XPOS), VAL(YPOS), VAL(ZPOS));
 		// int lod = int(VAL(LOD));
 		int lod = 4;
+
 		
 		// if (ModelerApplication::Instance()->IsAnimating())
 		// 	glRotated(cur_angle, 0, 1, 0);
@@ -299,12 +305,12 @@ void SampleModel::draw()
 			glTranslated(0, 0, cur_height);
 
 			// drawTorso();
-			callList(0);
+			callList(TORSO_ID);
 
 			if (lod > 0)
 			{
 				// drawHead();
-				callList(1);
+				callList(HEAD_ID);
 
 				// double LZ = (ModelerApplication::Instance()->IsAnimating()) ? cur_wave : (VAL(MOOD) == 1) ? -45.0: (VAL(MOOD) == 2) ?  45.0: VAL(L_UPPER_ARM_ZROT),
 				// 	   RZ = (ModelerApplication::Instance()->IsAnimating()) ? cur_wave : (VAL(MOOD) == 1) ?  45.0: (VAL(MOOD) == 2) ? -45.0: VAL(R_UPPER_ARM_ZROT),
@@ -367,6 +373,19 @@ void SampleModel::draw()
 
 		glPopMatrix();
 	glPopMatrix();
+	ModelerView::drawPs();
+	
+	glPushMatrix();
+		glTranslated(-5, 0, 0);
+		snow->setTexture();
+		snow->draw(1.0f);
+	glPopMatrix();
+	
+	glPushMatrix();
+		glTranslated(-5, 3, 0);
+		right_questionmark->setTexture();
+		right_questionmark->draw(2.0f);
+	glPopMatrix();
 
 	// Mirror
 	glStencilOp( GL_KEEP, GL_KEEP, GL_REPLACE );
@@ -375,13 +394,13 @@ void SampleModel::draw()
 
 	glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
 	glBegin(GL_TRIANGLES);
-		glVertex3f(mirror_x, -1.0, -2.0);
-		glVertex3f(mirror_x, -1.0,  2.0);
-		glVertex3f(mirror_x,  2.0,  2.0);
+		glVertex3f(mirror_x, -1.0, -5.0);
+		glVertex3f(mirror_x, -1.0,  5.0);
+		glVertex3f(mirror_x,  4.0,  5.0);
 
-		glVertex3f(mirror_x,  2.0,  2.0);
-		glVertex3f(mirror_x,  2.0, -2.0);
-		glVertex3f(mirror_x, -1.0, -2.0);
+		glVertex3f(mirror_x,  4.0,  5.0);
+		glVertex3f(mirror_x,  4.0, -5.0);
+		glVertex3f(mirror_x, -1.0, -5.0);
 	glEnd();
 	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
 
@@ -397,8 +416,6 @@ void SampleModel::draw()
 		glTranslated(-mirror_x, 0.0, 0.0);
 		
 		{
-			ModelerView::drawPs();
-
 			glPushMatrix();
 				glTranslated(- size / 2, - size / 2, - size / 2);
 				drawSkyBox(size, size, size);
@@ -418,12 +435,12 @@ void SampleModel::draw()
 					glTranslated(0, 0, cur_height);
 
 					// drawTorso();
-					callList(0);
+					callList(TORSO_ID);
 
 					if (lod > 0)
 					{
 						// drawHead();
-						callList(1);
+						callList(HEAD_ID);
 
 						// double LZ = (ModelerApplication::Instance()->IsAnimating()) ? cur_wave : (VAL(MOOD) == 1) ? -45.0: (VAL(MOOD) == 2) ?  45.0: VAL(L_UPPER_ARM_ZROT),
 						// 	   RZ = (ModelerApplication::Instance()->IsAnimating()) ? cur_wave : (VAL(MOOD) == 1) ?  45.0: (VAL(MOOD) == 2) ? -45.0: VAL(R_UPPER_ARM_ZROT),
@@ -485,6 +502,20 @@ void SampleModel::draw()
 					}
 
 				glPopMatrix();
+			glPopMatrix();
+
+			ModelerView::drawPs();
+	
+			glPushMatrix();
+				glTranslated(-5, 0, 0);
+				snow->setTexture();
+				snow->draw(1.0f);
+			glPopMatrix();
+
+			glPushMatrix();
+				glTranslated(-5, 3, 0);
+				right_questionmark->setTexture();
+				right_questionmark->draw(2.0f);
 			glPopMatrix();
 		}
 		glPopMatrix();

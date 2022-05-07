@@ -86,7 +86,7 @@ void drawArmR(double upper_y, double upper_z, double lower_x, double upper_x, Me
                 glDisable(GL_TEXTURE_2D);
                 setDiffuseColor(230.0/255, 208.0/255, 195.0/255);
                 // hand->render();
-                callList(3);
+                callList(RIGHT_METABALL_ID);
                 setDiffuseColor(1, 1, 1);
             glPopMatrix();
         }
@@ -121,7 +121,7 @@ void drawArmL(double upper_y, double upper_z, double lower_x, double upper_x, Me
                 glDisable(GL_TEXTURE_2D);
                 setDiffuseColor(230.0/255, 208.0/255, 195.0/255);
                 // hand->render();
-                callList(2);
+                callList(LEFT_METABALL_ID);
                 setDiffuseColor(1, 1, 1);
             glPopMatrix();
         }
@@ -261,7 +261,7 @@ void drawEquipmentL(double equip_y, double turret_y, double turret_x, int turret
                 glTranslated(-2.1, -0.3, 0.5);
                 glScaled(0.75, 0.75, 0.75);
                 // drawShip();
-                callList(6);
+                callList(SHIP_ID);
             glPopMatrix();
 
             drawTurrets(LEFT, turret_y, turret_x, turret_num, lod - 1);
@@ -298,7 +298,7 @@ void drawEquipmentR(double equip_y, double turret_y, double turret_x, int turret
                 glTranslated(0.59, -0.3, 0.5);
                 glScaled(0.75, 0.75, 0.75);
                 // drawShip();
-                callList(6);
+                callList(SHIP_ID);
             glPopMatrix();
 
             drawTurrets(RIGHT, turret_y, turret_x, turret_num, lod - 1);
@@ -314,7 +314,7 @@ void drawCompleteTurret(double turret_y, double turret_x, int turret_num, int lo
         if (turret_num == 2)
         {
             // drawTurret2();
-            callList(4);
+            callList(TURRENT2_ID);
             
             glTranslated(0.0, 0.1, -1.1);
             glRotated(-(180 - turret_x), 1.0, 0.0, 0.0);
@@ -335,7 +335,7 @@ void drawCompleteTurret(double turret_y, double turret_x, int turret_num, int lo
         else
         {
             // drawTurret3();
-            callList(5);
+            callList(TURRENT3_ID);
 
             glTranslated(0.0, 0.1, -1.2);
             glRotated(-(180 - turret_x), 1.0, 0.0, 0.0);
@@ -519,35 +519,35 @@ void Initial(MetaballContainer* left, MetaballContainer* right)
 	displaylistID = glGenLists(8); // total num of list
 
     // define listssss
-	glNewList(displaylistID, GL_COMPILE);
+	glNewList(displaylistID + TORSO_ID, GL_COMPILE);
 		drawTorso();
 	glEndList();
 
-	glNewList(displaylistID + 1, GL_COMPILE);
+	glNewList(displaylistID + HEAD_ID, GL_COMPILE);
 		drawHead();
 	glEndList();
 
-	glNewList(displaylistID + 2, GL_COMPILE);
+	glNewList(displaylistID + LEFT_METABALL_ID, GL_COMPILE);
 		left->render();
 	glEndList();
 
-	glNewList(displaylistID + 3, GL_COMPILE);
+	glNewList(displaylistID + RIGHT_METABALL_ID, GL_COMPILE);
 		right->render();
 	glEndList();
 
-	glNewList(displaylistID + 4, GL_COMPILE);
+	glNewList(displaylistID + TURRENT2_ID, GL_COMPILE);
 		drawTurret2();
 	glEndList();
 
-    glNewList(displaylistID + 5, GL_COMPILE);
+    glNewList(displaylistID + TURRENT3_ID, GL_COMPILE);
 		drawTurret3();
 	glEndList();
 
-    glNewList(displaylistID + 6, GL_COMPILE);
+    glNewList(displaylistID + SHIP_ID, GL_COMPILE);
 		drawShip();
 	glEndList();
 
-    glNewList(displaylistID + 7, GL_COMPILE);
+    glNewList(displaylistID + SPHERE_ID, GL_COMPILE);
 		drawSphere(1.0);
 	glEndList();
 }

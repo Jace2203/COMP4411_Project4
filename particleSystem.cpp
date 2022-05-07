@@ -20,7 +20,6 @@ std::vector<Vec4f*> particle_spawn;
 ParticleSystem::ParticleSystem()
 : bake_fps(0.0f), bake_start_time(0.0f), bake_end_time(0.0f), simulate(false), dirty(false)
 {
-	snow = new Billboard("texture/snow.png");
 }
 
 
@@ -34,7 +33,6 @@ ParticleSystem::ParticleSystem()
 ParticleSystem::~ParticleSystem() 
 {
 	clearBaked();
-	delete snow;
 }
 
 
@@ -129,6 +127,7 @@ void ParticleSystem::computeForcesAndUpdateParticles(float t)
 			pa.push_back(pp);
 		}
 	}
+	particle_spawn.clear();
 
 	// Accumulate Force
 	for (auto it = pa.begin(); it != pa.end(); it++)
@@ -151,24 +150,32 @@ void ParticleSystem::computeForcesAndUpdateParticles(float t)
 /** Render particles */
 void ParticleSystem::drawParticles(float t)
 {
-	if (t < bake_start_time || t > bake_end_time)
-		return;
+	std::vector<Particle> p;
+	if (simulate)
+	{
+		p = particles.back();
+	}
+	else
+	{
+		if (t < bake_start_time || t > bake_end_time)
+			return;
 
-	int time = int((t - bake_start_time) * 30.0f) / (30.0f / bake_fps);
+		int time = int((t - bake_start_time) * 30.0f) / (30.0f / bake_fps);
 
-	if (time >= particles.size())
-		return;
+		if (time >= particles.size())
+			return;
 
-	std::vector<Particle>& p = particles[time];
-	if (p.empty())
-		return;
+		p = particles[time];
+		if (p.empty())
+			return;
+	}
 
 	float currentColor[4];
 	glGetFloatv(GL_CURRENT_COLOR,currentColor);
 	for (auto it = p.begin(); it != p.end(); it++)
 	{
 		Particle p = *it;
-		p.draw(t, true, snow);
+		p.draw(t);
 	}
 	setDiffuseColor(currentColor[0], currentColor[1], currentColor[2]);
 }

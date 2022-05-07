@@ -34,8 +34,6 @@ class ParticleSystem {
 
 public:
 
-
-
 	/** Constructor **/
 	ParticleSystem();
 
@@ -86,10 +84,7 @@ public:
 protected:
 	
 	std::vector<std::vector<Particle>> particles;
-	std::vector<Particle*> new_p;
 	std::vector<std::function<Vec3f(Vec3f)>> forces;
-
-	Billboard* snow;
 
 	/** Some baking-related state **/
 	float bake_fps;						// frame rate at which simulation was baked

@@ -14,6 +14,7 @@
 
 Billboard::Billboard(char* file)
 {
+    stbi_set_flip_vertically_on_load(1);
     texture = stbi_load(file, &width, &height, &channel, 0);
 }
 
@@ -30,7 +31,10 @@ void Billboard::setTexture()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
 
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, texture);
+    if (channel == 3)
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, texture);
+    else
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, texture);
 }
 
 void Billboard::draw(float scale)

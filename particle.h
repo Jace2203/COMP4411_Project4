@@ -13,7 +13,7 @@ struct Particle
 
     float t;
 
-    void draw(float t, bool bill = false, Billboard* b = nullptr);
+    void draw(float t);
 };
 
 #endif
