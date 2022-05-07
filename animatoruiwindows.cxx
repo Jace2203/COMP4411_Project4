@@ -44,7 +44,6 @@ Fl_Menu_Item ModelerUIWindows::menu_m_pchoCurveType[] = {
  {"Bezier", 0,  0, 0, 0, 0, 0, 12, 0},
  {"Catmull-Rom", 0,  0, 0, 0, 0, 0, 12, 0},
  {"C2-Interpolating", 0,  0, 0, 0, 0, 0, 12, 0},
- {"Lane-Riensenfeld", 0,  0, 0, 0, 0, 0, 14, 0},
  {0}
 };
 
@@ -140,9 +139,10 @@ ModelerUIWindows::ModelerUIWindows() {
           }
           { Fl_Value_Slider* o = m_EpsilonSlider = new Fl_Value_Slider(225, 517, 125, 18, "Flatness:");
             o->type(1);
-            o->minimum(0.01);
-            o->maximum(0.5);
-            o->value(0.05);
+            o->minimum(0.001);
+            o->maximum(0.3);
+            o->step(0.001);
+            o->value(0.01);
             o->user_data((void*)(this));
             o->align(FL_ALIGN_LEFT);
           }

@@ -11,7 +11,7 @@ class ModelerUIWindows {open
   } {
     Fl_Window m_pwndMainWnd {
       label {CS 341 Animator (Sp02)} open
-      xywh {747 226 589 705} color 185 labeltype NORMAL_LABEL when 0 visible
+      xywh {582 146 589 705} color 185 labeltype NORMAL_LABEL when 0 visible
     } {
       Fl_Menu_Bar m_pmbMenuBar {
         xywh {0 0 590 25} selection_color 137 labelsize 12 textsize 12
@@ -180,8 +180,8 @@ class ModelerUIWindows {open
             }
             Fl_Value_Slider m_EpsilonSlider {
               label {Flatness:}
-              user_data this
-              xywh {225 517 125 18} type Horizontal align 4 minimum 0.01 maximum 0.5 value 0.05
+              user_data this selected
+              xywh {225 517 125 18} type Horizontal align 4 minimum 0.001 maximum 0.3 step 0.001 value 0.01
             }
             Fl_Light_Button m_adaptiveButton {
               label {adaptive Bezier curve}
@@ -326,7 +326,7 @@ class ModelerUIWindows {open
         }
       }
       Fl_Box {} {
-        label {Model Controls} selected
+        label {Model Controls}
         xywh {5 30 145 25} color 7 labelfont 1 labelsize 18 labelcolor 7
       }
     }

@@ -567,6 +567,7 @@ void SampleModel::draw()
 	lastimage.push_back(temp);
 
 	int image_num = 5;
+	int num = image_num * (image_num + 1) / 2;
 
 	if (lastimage.size() >= image_num)
 	{
@@ -581,8 +582,11 @@ void SampleModel::draw()
 			temp = new unsigned char[3 * ModelerView::w() * ModelerView::h()]{};
 			for(auto it = 0; it != image_num; ++it)
 			{
+				// int n = 5 - it;
 				for(int i = 0; i < 3 * ModelerView::w() * ModelerView::h(); ++i)
-					temp[i] += *(lastimage[it] + i) * 1.0 / image_num;
+				{
+					temp[i] += *(lastimage[it] + i) * (it + 1) / num;
+				}
 			}
 			
 			glDrawPixels( ww, 

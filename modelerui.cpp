@@ -922,7 +922,7 @@ m_iFps(30),
 m_bAnimating(false),
 m_bSaveMovie(false),
 m_fTension(0.5f),
-m_fepsilon(0.05f),
+m_fepsilon(0.01f),
 m_adaptiveBcurce(0),
 m_motionblur(0)
 {
